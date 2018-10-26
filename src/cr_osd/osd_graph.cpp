@@ -14,9 +14,6 @@
 
 ICore_1001 *osd_core = NULL;
 
-CGlobalData *precvOsd_grpx = CGlobalData::getInstance();
-
-
 #define ALG_LINK_GRPX_MAX_CH	2
 #define ALG_LINK_GRPX_MAX_WINDOWS	64
 
@@ -107,15 +104,15 @@ void osd_draw_string(cv::Mat frame, int startx, int starty, char *pString, UInt3
 
 	if(chId==0)
 	{
-		fontWidth		= 	16;
-		fontHeight 	= 	20;
+		fontWidth		= 	OSDUTIL_FONT_WIDTH_16x20;
+		fontHeight 	= 	OSDUTIL_FONT_HEIGHT_16x20;
 		fontData		=	FONT_LIBRARY_16x20;
 	}
 	else if(chId==1)
 	{
-		fontWidth		= 	10;
-		fontHeight 	= 	18;
-		fontData		=	FONT_LIBRARY_0814;
+		fontWidth		= 	OSDUTIL_FONT_WIDTH_10x18;
+		fontHeight 	= 	OSDUTIL_FONT_HEIGHT_10x18;
+		fontData		=	FONT_LIBRARY_10x18;
 	}
 	if(fontWidth%8!=0)
 	{
@@ -189,7 +186,7 @@ void osd_draw_text(cv::Mat frame, void *prm, int chId)
 	for (i = 0; i < 3; i++)
 	{
 		if(vaild[i] != 0)
-			fontfrColor = GetRgbColour(2);
+			fontfrColor = GetRgbColour(pObj->frcolor);
 		else
 			fontfrColor = 0x00000000;
 		fontbgColor = pObj->bgcolor;
@@ -200,9 +197,95 @@ void osd_draw_text(cv::Mat frame, void *prm, int chId)
 }
 #endif
 
-#ifdef OSD_MODE_CV
-CvScalar GetcvColour(unsigned int colorId)
+
+void drawdashline(cv::Mat frame,int startx,int starty,int endx,int endy,int linelength,int dashlength,int color)
 {
+	int i=0;
+	int flagx=1;
+	int flagy=1;
+	double totallengthy=0.0;
+	double  totallengthx=0.0;
+	int totallength=dashlength+linelength;  
+	int len=abs(endy-starty)+abs(endx-startx);
+	double nCount=len/totallength;
+	CvScalar colour=GetcvColour(color, frame.channels());
+	totallengthx=abs(endx-startx)*1.0/nCount;
+	totallengthy=abs(endy-starty)*1.0/nCount;
+
+	//printf("jet +++ color = %f\n",colour);
+	cv::Point start,end;//start and end point of each dash  
+	if(startx>endx)
+		flagx=-1;
+	if(starty>endy)
+		flagy=-1;
+
+	if(startx==endx)
+	{		
+		for (int i=0;i<nCount;i=i+2)
+		{  
+			end.x=startx;
+			start.x=startx; 
+			start.y=cvRound(starty+i*totallengthy*flagy);
+			end.y=cvRound(starty+(i+1)*totallengthy*flagy);//draw left dash line
+			line(frame, start, end, colour, 2, 8, 0 ); 
+		}  
+		return ;
+	}
+	if(starty==endy)
+	{
+		for (int i=0;i<nCount;i=i+2)
+		{  
+			start.x=cvRound(startx+i*totallengthx*flagx);
+			end.x=cvRound(startx+(i+1)*totallengthx*flagx); 
+			start.y=starty;
+			end.y=starty; 
+			line(frame, start, end, colour, 2, 8, 0 ); 
+		}  
+		return ;
+	}
+
+	for (int i=0;i<nCount;i=i+2)
+	{  
+		end.x=cvRound(startx+(i+1)*totallengthx*flagx);//draw top dash line  
+		start.x=cvRound(startx+i*totallengthx*flagx);  
+		start.y=cvRound(starty+i*totallengthy*flagy);  
+		end.y=cvRound(starty+(i+1)*totallengthy*flagy);//draw left dash line  
+
+		line(frame, start, end, colour, 2, 8, 0 ); 
+	}  
+}
+
+void DrawcvDashcross(cv::Mat frame, void *prm)
+{
+	Line_Param_fb * pObj = (Line_Param_fb *)prm;
+	if(pObj == NULL)
+		return ;
+	
+	int centx, centy, width;
+	centx=pObj->x;
+	centy=pObj->y;
+	width=pObj->width;
+	int startx=centx-width/2;
+	int starty=centy;
+	int endx=centx+width/2;
+	int endy=centy;
+	int linelength = 3;		// lineparm->lineGapWidth;
+	int dashlength = 3;	// lineparm->lineGapHeight;
+	drawdashline(frame,startx,starty,endx,endy,linelength,dashlength,pObj->frcolor);
+
+	startx=centx;
+	starty=centy-width/2;
+	endx=centx;
+	endy=centy+width/2;
+	drawdashline(frame,startx,starty,endx,endy,linelength,dashlength,pObj->frcolor);
+
+}
+
+
+#ifdef OSD_MODE_CV
+CvScalar GetcvColour(unsigned int colorId, int framechannels)
+{
+	// cvScalar(0,0,0,255) => (R, G, B, alpha)
 	switch(colorId)
 	{
 	case ecolor_Black:
@@ -234,7 +317,7 @@ void osd_cvdraw_line(cv::Mat frame, void *prm)
 {
 	Line_Param_fb * pObj = (Line_Param_fb *)prm;
 	cv::Point pt1,pt2;
-	CvScalar lineColor = GetcvColour(pObj->frcolor);
+	CvScalar lineColor = GetcvColour(pObj->frcolor, frame.channels());
 	UInt32 linePixels = pObj->linePixels;
 
 	pt1.x=pObj->x;
@@ -249,24 +332,15 @@ void osd_cvdraw_rect(cv::Mat frame, void *prm)
 {
 	Line_Param_fb * pObj = (Line_Param_fb *)prm;
 	cv::Point pt1,pt2;
-	CvScalar lineColor = GetcvColour(pObj->frcolor);
+	CvScalar lineColor = GetcvColour(pObj->frcolor, frame.channels());
 	UInt32 linePixels = pObj->linePixels;
-/*
+
 	pt1.x=pObj->x-pObj->width/2;
 	pt1.y=pObj->y-pObj->height/2;
 	pt2.x=pObj->x+pObj->width/2;
 	pt2.y=pObj->y+pObj->height/2;
-*/
-
-	pt1.x = 100+precvOsd_grpx->osd_core.osd_secondTrk_X - pObj->width/2;
-	pt1.y = 100+precvOsd_grpx->osd_core.osd_secondTrk_Y -pObj->height/2;
-	pt2.x = 100+precvOsd_grpx->osd_core.osd_secondTrk_X + pObj->width/2;
-	pt2.y = 100+precvOsd_grpx->osd_core.osd_secondTrk_Y + pObj->height/2;
-
 	
 	rectangle( frame,pt1,pt2,lineColor, linePixels, 8);
-
-
 }
 
 void osd_cvdraw_compass(cv::Mat frame, void *prm)
@@ -275,7 +349,7 @@ void osd_cvdraw_compass(cv::Mat frame, void *prm)
 	UInt32 iX, iY, iR = 0;
 	int deltaX, deltaY;
 	UInt32 linePixels, width, height;
-	CvScalar lineColor = GetcvColour(pObj->frcolor);
+	CvScalar lineColor = GetcvColour(pObj->frcolor, frame.channels());
 	double Angle = 0.0;
 	UInt32 pX1,pX2,pX3,pX4, pY1,pY2,pY3,pY4;
 
@@ -345,106 +419,16 @@ void osd_cvdraw_compass(cv::Mat frame, void *prm)
 
 }
 
-void drawdashline(cv::Mat frame,int startx,int starty,int endx,int endy,int linelength,int dashlength,int color)
-{
-	int i=0;
-	int flagx=1;
-	int flagy=1;
-	double totallengthy=0.0;
-	double  totallengthx=0.0;
-	int totallength=dashlength+linelength;  
-	int len=abs(endy-starty)+abs(endx-startx);
-	double nCount=len/totallength;
-	CvScalar colour=GetcvColour(color);
-	totallengthx=abs(endx-startx)*1.0/nCount;
-	totallengthy=abs(endy-starty)*1.0/nCount;
-
-	//printf("jet +++ color = %f\n",colour);
-	cv::Point start,end;//start and end point of each dash  
-	if(startx>endx)
-		flagx=-1;
-	if(starty>endy)
-		flagy=-1;
-
-	if(startx==endx)
-	{		
-		for (int i=0;i<nCount;i=i+2)
-		{  
-			end.x=startx;
-			start.x=startx; 
-			start.y=cvRound(starty+i*totallengthy*flagy);
-			end.y=cvRound(starty+(i+1)*totallengthy*flagy);//draw left dash line
-			line(frame, start, end, colour, 2, 8, 0 ); 
-		}  
-		return ;
-	}
-	if(starty==endy)
-	{
-		for (int i=0;i<nCount;i=i+2)
-		{  
-			start.x=cvRound(startx+i*totallengthx*flagx);
-			end.x=cvRound(startx+(i+1)*totallengthx*flagx); 
-			start.y=starty;
-			end.y=starty; 
-			line(frame, start, end, colour, 2, 8, 0 ); 
-		}  
-		return ;
-	}
-
-	for (int i=0;i<nCount;i=i+2)
-	{  
-		end.x=cvRound(startx+(i+1)*totallengthx*flagx);//draw top dash line  
-		start.x=cvRound(startx+i*totallengthx*flagx);  
-		start.y=cvRound(starty+i*totallengthy*flagy);  
-		end.y=cvRound(starty+(i+1)*totallengthy*flagy);//draw left dash line  
-
-		line(frame, start, end, colour, 2, 8, 0 ); 
-	}  
-}
-
-void DrawcvDashcross(cv::Mat frame,Line_Param_fb *lineparm,int linelength,int dashlength, bool b_show)
-{
-	int centx, centy, width;
-	if(lineparm==NULL)
-		return;
-	
-	centx=lineparm->x;
-	centy=lineparm->y;
-	width=lineparm->width;
-	int startx=centx-width/2;
-	int starty=centy;
-	int endx=centx+width/2;
-	int endy=centy;
-	if(b_show)
-		drawdashline(frame,startx,starty,endx,endy,linelength,dashlength,lineparm->frcolor);
-
-	startx=centx;
-	starty=centy-width/2;
-	endx=centx;
-	endy=centy+width/2;
-	if(b_show)
-		drawdashline(frame,startx,starty,endx,endy,linelength,dashlength,lineparm->frcolor);	
-
-}
-
 void osd_cvdraw_SecondTrk_Cross(cv::Mat frame, void *prm)
 {
-	Line_Param_fb * pObj = (Line_Param_fb *)prm;
-
-	pObj->x = precvOsd_grpx->osd_core.osd_secondTrk_X;
-	pObj->y = precvOsd_grpx->osd_core.osd_secondTrk_Y;
-	
-	if(precvOsd_grpx->osd_core.osd_enSecondTrk)
-		DrawcvDashcross(frame,pObj,2,2,true);
-	else
-		DrawcvDashcross(frame,pObj,2,2,false);
+	DrawcvDashcross(frame, prm);
 }
 
 void osd_cvdraw_text(cv::Mat frame, void *prm)
 {
 	Text_Param_fb * pObj = (Text_Param_fb *)prm;
 	cv::Point pt[3];
-	CvScalar lineColor = GetcvColour(pObj->frcolor);
+	CvScalar lineColor = GetcvColour(pObj->frcolor, frame.channels());
 	int i;
 	int vaild[3];
 	int textLenPrev[3];
@@ -475,9 +459,9 @@ void osd_cvdraw_text(cv::Mat frame, void *prm)
 	for (i = 0; i < 3; i++)
 	{
 		if(vaild[i] == 0)
-			lineColor = GetcvColour(ecolor_Default);//(ecolor_Default);
+			lineColor = GetcvColour(ecolor_Default, frame.channels());
 		else
-			lineColor = GetcvColour(2);//(ecolor_Default);
+			lineColor = GetcvColour(pObj->frcolor, frame.channels());
 		putText(frame, textStr[i],
 				pt[i],
 				CV_FONT_HERSHEY_COMPLEX, 1.0,
@@ -511,7 +495,7 @@ void Erase_graph_win(cv::Mat frame, void *Parampri, int chId)
 		//osd_draw_text(frame, Parampri, chId);
 		break;
 	case grpx_ObjId_SecondTrk_Cross:
-		//osd_cvdraw_SecondTrk_Cross(frame, Parampri);
+		osd_cvdraw_SecondTrk_Cross(frame, Parampri);
 		break;
 	// for project
 	// for project end
@@ -526,7 +510,7 @@ void Draw_graph_win(cv::Mat frame, void *Param, int chId)
 {
 	Text_Param_fb * textParam = (Text_Param_fb *)Param;
 
-	textParam->frcolor = ecolor_White;
+	//textParam->frcolor = ecolor_White;
 
 	switch(textParam->objType)
 	{
@@ -547,7 +531,7 @@ void Draw_graph_win(cv::Mat frame, void *Param, int chId)
 		osd_draw_text(frame, Param, chId);
 		break;
 	case grpx_ObjId_SecondTrk_Cross:
-		//osd_cvdraw_SecondTrk_Cross(frame, Param);
+		osd_cvdraw_SecondTrk_Cross(frame, Param);
 		break;
 
 	// for project
@@ -582,8 +566,7 @@ static void* MultichGrpx_task(void *pPrm)
 		if (pMultGraphicObj->tskGraphicLoop == FALSE)
 			break;
 
-		//no create  muxLock
-		//OSA_mutexLock(&pMultGraphicObj->muxLock);
+		OSA_mutexLock(&pMultGraphicObj->muxLock);
 		for(chId = 0; chId < pMultGraphicObj->devFb_num; chId++)
 		{
 			frame = osd_core->m_dc[chId];
@@ -602,7 +585,7 @@ static void* MultichGrpx_task(void *pPrm)
 				memcpy(&pChPrm->winPrms_pri[winId], &pChPrm->winPrms[winId], sizeof(Text_Param_fb));
 			}
 		}
-		//OSA_mutexUnlock(&pMultGraphicObj->muxLock);
+		OSA_mutexUnlock(&pMultGraphicObj->muxLock);
 	}
 
 	pMultGraphicObj->tskGraphicStopDone = TRUE;
@@ -633,6 +616,7 @@ void  osd_graph_init()
 		}
 	}
 
+	OSA_mutexCreate(&grpxChWinPrms.muxLock);
 	grpxChWinPrms.tskGraphicLoop = TRUE;
 	grpxChWinPrms.tskGraphicStopDone = FALSE;
 	status = OSA_semCreate(&grpxChWinPrms.tskGraphicSem, 1, 0);
@@ -664,6 +648,7 @@ void osd_graph_uninit(void)
 	OSA_waitMsecs(1000);
 	OSA_thrDelete(&grpxChWinPrms.tskGraphicHndl);
 	OSA_semDelete(&pMultGraphicObj->tskGraphicSem);
+	OSA_mutexDelete(&pMultGraphicObj->muxLock);
 
 	grpxChWinPrms.bGraphicInit = FALSE;
 	OSA_printf(" %s done.\n", __func__);

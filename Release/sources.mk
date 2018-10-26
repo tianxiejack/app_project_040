@@ -29,7 +29,6 @@ src \
 src/cr_uart \
 src/cr_timer \
 src/cr_osd \
-src/cr_osa/src \
 src/cr_gpio \
 src/capture \
 

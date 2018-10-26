@@ -95,7 +95,7 @@ typedef struct  _rect_param_fb{
 #define OSD_MODE_RGB
 
 #ifdef OSD_MODE_CV
-CvScalar GetcvColour(unsigned int colorId);
+CvScalar GetcvColour(unsigned int colorId, int framechannels);
 #endif
 
 void osd_grpxUpdate();

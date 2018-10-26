@@ -13,10 +13,11 @@
 #include "osa_buf.h"
 #include "osa_sem.h"
 
-#define DS_DC_CNT		(2)
+#define DS_DC_CNT		(1)
 
 using namespace std;
 using namespace cv;
+using namespace cr_osa;
 
 typedef struct _ds_size{
 	int w;
@@ -71,6 +72,7 @@ typedef struct _ds_init_param{
 	void (*timerfunc)(int value);
 	void (*idlefunc)(void);
 	void (*closefunc)(void);
+	void (*renderfunc)(void);
 	int timerfunc_value;//context
 }DS_InitPrm;
 
@@ -90,7 +92,6 @@ public:
 
 	typedef enum{
 		DS_CFG_ChId = 0,
-		DS_CFG_EnhEnable,
 		DS_CFG_CropEnable,
 		DS_CFG_CropRect,
 		DS_CFG_VideoTransMat,
@@ -112,7 +113,9 @@ public:
 	Mat m_imgOsd[DS_DC_CNT];
 	DS_Size m_videoSize[DS_CHAN_MAX];
 	GLuint buffId_input[DS_CHAN_MAX];
+	GLuint buffId_osd[DS_DC_CNT];
 	OSA_BufHndl m_bufQue[DS_CHAN_MAX];
+	OSA_MutexHndl *m_cumutex;
 
 protected:
 	DS_InitPrm m_initPrm;
@@ -152,6 +155,7 @@ protected:
 private:
 	OSA_MutexHndl m_mutex;
 	uint64  m_interval;
+	double m_telapse;
 	uint64  m_tmBak[DS_CHAN_MAX];
 	int64   m_tmRender;
 	bool m_timerRun;

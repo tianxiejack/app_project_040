@@ -23,22 +23,15 @@ typedef struct
 	short secondTrk_Y;	
 	int chId;
 	int fovId;
-	int ndrop;
-	int width;
-	int height;	
-	int nTarget;
+	int nTarget_index;
 	int enENH[4];
 	int DispLever;
-	int axis_X;
-	int axis_Y;
 	int nFrames;
 	int enZoomx;
 	int Color;
 	int EncTransLevel;
+	int videoTransMode;
 	int TrkWinSize;
-	float ref_x;
-	float ref_y;
-	
 }CORE_CMD;
 
 

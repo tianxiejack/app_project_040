@@ -79,8 +79,8 @@ void app_ctrl_setSearchTrk(CORE_CMD * pInCmd)
 	Rect2f winRect;
 	winRect.width = (float)trkWinWH[pInCmd->chId][1][0];
 	winRect.height = (float)trkWinWH[pInCmd->chId][1][1];
-	winRect.x = (float)pInCmd->secondTrk_X;
-	winRect.y = (float)pInCmd->secondTrk_Y;
+	winRect.x = (float)pInCmd->secondTrk_X - winRect.width/2;
+	winRect.y = (float)pInCmd->secondTrk_Y - winRect.height/2;
 	
 	enSecTrkBak=pInCmd->enTrk;
 	
@@ -214,6 +214,42 @@ void app_ctrl_setMMT(CORE_CMD * pInCmd)
 	}
 }
 
+int app_ctrl_setMmtSelect(CORE_CMD * pInCmd)
+{
+	int ret;
+	int nTarget_indexBak;
+	
+	nTarget_indexBak = pInCmd->nTarget_index-1;
+	
+	if(uart_core->m_stats.tgts[nTarget_indexBak].valid)
+		ret = 0x01;
+	else
+		ret = 0x00;
+
+	//OSA_printf("jet +++ pInCmd->nTarget_index=%d valid=%d,ret=%d\n",pInCmd->nTarget_index,uart_core->m_stats.tgts[nTarget_indexBak].valid,ret);
+
+	return ret;
+}
+
+void app_ctrl_setMMTTrk(CORE_CMD * pInCmd)
+{
+
+	int mmtTrkId;
+	cv::Size acqSize;
+	acqSize.width = trkWinWH[pInCmd->chId][1][0];
+	acqSize.height = trkWinWH[pInCmd->chId][1][1];
+
+	mmtTrkId = pInCmd->nTarget_index-1;
+	
+	if(uart_core->m_stats.tgts[mmtTrkId].valid)
+		uart_core->enableTrackByMMTD(mmtTrkId, &acqSize, true);
+	else
+		uart_core->enableTrack(true, acqSize, true);
+
+	OSA_printf("jet +++ pInCmd->nTarget_index=%d valid=%d\n",pInCmd->nTarget_index,uart_core->m_stats.tgts[mmtTrkId].valid);
+
+}
+
 void app_ctrl_setZoom(CORE_CMD * pInCmd)
 {
 	static int enZoomBak=0x01;
@@ -261,7 +297,49 @@ void app_ctrl_setTrkBomen(CORE_CMD * pInCmd)
 	{		
 		uart_core->enableTrack(pInCmd->enTrk, acqSize, true);	
 		TrkWinBak = pInCmd->TrkWinSize;
-		OSA_printf("jet +++pInCmd->TrkWinSize=%d,enTrk=%d,WH=(%d,%d)\n", pInCmd->TrkWinSize,pInCmd->enTrk,acqSize.width,acqSize.height);
+		OSA_printf("jet +++ pInCmd->TrkWinSize=%d,enTrk=%d,WH=(%d,%d)\n", pInCmd->TrkWinSize,pInCmd->enTrk,acqSize.width,acqSize.height);
+	}
+}
+void app_ctrl_set422Rate(CORE_CMD * pInCmd )
+{
+	static int EncTransLevelBak=0x01;
+
+	if(EncTransLevelBak!= pInCmd->EncTransLevel)
+	{		
+		uart_core->setEncTransLevel(pInCmd->EncTransLevel);
+		EncTransLevelBak = pInCmd->EncTransLevel;
+		OSA_printf("jet +++ pInCmd->EncTransLevel=%d\n", pInCmd->EncTransLevel);
 	}
 }
 
+void app_ctrl_set422TransMode(CORE_CMD * pInCmd )
+{
+	static int videoTransModeBak=0x03;
+
+	if(videoTransModeBak!= pInCmd->videoTransMode)
+	{		
+		if(pInCmd->videoTransMode == 0x01)
+		{
+			uart_core->enableEncoder(0, true);
+			uart_core->enableEncoder(1, false);
+		}
+		else if(pInCmd->videoTransMode == 0x02)
+		{
+			uart_core->enableEncoder(0, false);
+			uart_core->enableEncoder(1, true);
+		}
+		else if(pInCmd->videoTransMode == 0x03)
+		{
+			uart_core->enableEncoder(0, true);
+			uart_core->enableEncoder(1, true);
+		}
+		else
+		{
+			uart_core->enableEncoder(0, false);
+			uart_core->enableEncoder(1, false);
+		}
+		
+		videoTransModeBak = pInCmd->videoTransMode;
+		OSA_printf("jet +++ pInCmd->videoTransMode=%d\n", pInCmd->videoTransMode);
+	}
+}

@@ -10,7 +10,6 @@ typedef struct
 	bool osd_enEnh;
 	bool osd_enLaser;
 	bool osd_enLA;
-	bool osd_Color;
 	bool osd_LMC;
 	bool osd_AxisMode;
 	bool osd_enZoom;

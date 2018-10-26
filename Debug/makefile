@@ -13,7 +13,6 @@ RM := rm -rf
 -include src/cr_uart/subdir.mk
 -include src/cr_timer/subdir.mk
 -include src/cr_osd/subdir.mk
--include src/cr_osa/src/subdir.mk
 -include src/cr_gpio/subdir.mk
 -include src/capture/subdir.mk
 

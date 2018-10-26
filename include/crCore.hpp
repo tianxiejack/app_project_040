@@ -46,12 +46,12 @@ typedef struct _core_1001_stats{
 	int mainChId;
 	bool enableTrack;
 	bool enableMMTD;
+	bool enableMotionDetect;
 	cv::Size acqWinSize;
 	int iTrackorStat;
 	cv::Point2f trackPos;
 	cv::Size trackWinSize;
 	CORE_TGT_INFO tgts[CORE_TGT_NUM_MAX];
-
 	CORE1001_CHN_STATS chn[CORE_CHN_MAX];
 }CORE1001_STATS;
 
@@ -69,17 +69,21 @@ typedef struct _core_1001_init{
 	bool bHideOSD;
 	int renderFPS;
 	int *encoderParamTab[3];
+	char *encStreamIpaddr;
 }CORE1001_INIT_PARAM;
 typedef cv::Rect_<float> Rect2f;
 class ICore_1001 : public ICore
 {
 public:
 	virtual int setMainChId(int chId, int fovId, int ndrop, cv::Size acqSize) = 0;
+	virtual int setSubChId(int chId) = 0;
 	virtual int enableTrack(bool enable, cv::Size winSize, bool bFixSize = false) = 0;
 	virtual int enableTrack(bool enable, Rect2f winRect, bool bFixSize = false) = 0;
 	virtual int enableMMTD(bool enable, int nTarget) = 0;
 	virtual int enableTrackByMMTD(int index, cv::Size *winSize = NULL, bool bFixSize = false) = 0;
+	virtual int enableMotionDetect(bool enable) = 0;
 	virtual int enableEnh(bool enable) = 0;
+	virtual int enableEnh(int chId, bool enable) = 0;
 	virtual int enableOSD(bool enable) = 0;
 	virtual int enableEncoder(int chId, bool enable) = 0;
 	virtual int setAxisPos(cv::Point pos) = 0;
@@ -87,6 +91,7 @@ public:
 	virtual int setTrackPosRef(cv::Point2f ref) = 0;
 	virtual int setTrackCoast(int nFrames) = 0;
 	virtual int setEZoomx(int value) = 0;
+	virtual int setEZoomx(int chId, int value) = 0;
 	virtual int setOSDColor(int yuv) = 0;
 	virtual int setEncTransLevel(int iLevel) = 0;
 

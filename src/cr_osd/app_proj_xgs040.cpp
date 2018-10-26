@@ -599,14 +599,14 @@ Int16 APP_text_genContext(int chId, int winId, char * str, int strBufLen, Int16 
 			laserCnt ++;
 			
 			if(precvOsd_text->osd_core.osd_AxisMode)
-				sprintf(pStr, "Bx:%d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.x);
+				sprintf(pStr, "Bx:%4d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.x);
 			else
 				sprintf(pStr, "       ");
 			lineStrLen = textLen[0];
 			pStr += lineStrLen;
 
 			if(precvOsd_text->osd_core.osd_AxisMode)
-				sprintf(pStr, "By:%d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.y);
+				sprintf(pStr, "By:%4d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.y);
 			else
 				sprintf(pStr, "       ");
 			lineStrLen = textLen[1];
@@ -1040,8 +1040,8 @@ int APP_init_graphic_parms(int chId, int winId, void *pPrm)
 /*
 	case GRPX_WINID_SENSOR_RECT:
 		rectParam->objType 	= grpx_ObjId_Rect;
-		rectParam->x 		= 80;	// 30+16
-		rectParam->y 		= 60;	// 50+20/2-linePixels
+		rectParam->x 		= 46;	// 30+16
+		rectParam->y 		= 58;	// 50+20/2-linePixels
 		rectParam->width 		= 48;
 		rectParam->height 	= 30;
 		rectParam->linePixels 	= 2;
@@ -1072,8 +1072,8 @@ int APP_init_graphic_parms(int chId, int winId, void *pPrm)
 		rectParam->objType 	= grpx_ObjId_SecondTrk_Cross;
 		rectParam->x 		= 300;	// 30+16
 		rectParam->y 		= 500;	// 50+20/2-linePixels
-		rectParam->width 		= 80;
-		rectParam->height 	= 60;
+		rectParam->width 		= 50;
+		rectParam->height 	= 36;
 		rectParam->linePixels 	= 2;
 		break;
 
@@ -1100,7 +1100,7 @@ int APP_set_graphic_parms(int chId, int winId, void *pPrm)
 	//grpRect = (pIStuts->DispGrp[chId] & eDisp_show_rect)?1:0;			// display rect control
 	grpLevel = (pIStuts->DispGrp[chId]);		// display level control
 #else
-	textParam->frcolor		= 1;
+	textParam->frcolor		= ecolor_White;
 	grpLevel = precvOsd_text->osd_core.osd_enDisp;		// display level control
 #endif
 
@@ -1182,22 +1182,15 @@ int APP_set_graphic_parms(int chId, int winId, void *pPrm)
 		break;
 
 	case GRPX_WINID_SECONDTRK_CROSS:
-		if(1){
-			//draw TV rect
-			rectParam->x			= 300;	// 30+16
-			rectParam->width 		= 80;
-		}else if(0){
-			//draw SWIR rect
-			rectParam->x 		= 116;	// 84+16*2
-			rectParam->width 		= 80;
-		}else if(0){
-			//draw MWIR rect
-			rectParam->x			= 196;	// 164+16*2
-			rectParam->width 		= 80;
-		}
+		
+		lineParam->x = precvOsd_text->osd_core.osd_secondTrk_X;
+		lineParam->y = precvOsd_text->osd_core.osd_secondTrk_Y;
+		
+		if(precvOsd_text->osd_core.osd_enSecondTrk)
+			lineParam->frcolor = ecolor_White;
+		else	
+			lineParam->frcolor = ecolor_Default;
 
-		if(grpLevel >= 2)
-			rectParam->frcolor		= ecolor_Default;
 		break;
 
 

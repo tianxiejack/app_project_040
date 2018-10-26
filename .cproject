@@ -35,7 +35,7 @@
 									<listOptionValue builtIn="false" value="../src/encTrans"/>
 									<listOptionValue builtIn="false" value="../src"/>
 									<listOptionValue builtIn="false" value="../src/core"/>
-									<listOptionValue builtIn="false" value="../src/cr_osa/inc"/>
+									<listOptionValue builtIn="false" value="../include/osa"/>
 								</option>
 								<option id="nvcc.compiler.undef.symbol.1686673775" name="Undefined symbols (-U)" superClass="nvcc.compiler.undef.symbol"/>
 								<inputType id="nvcc.compiler.input.cu.1597305464" superClass="nvcc.compiler.input.cu"/>
@@ -65,6 +65,8 @@
 									<listOptionValue builtIn="false" value="crgst"/>
 									<listOptionValue builtIn="false" value="v4l2"/>
 									<listOptionValue builtIn="false" value="crcore"/>
+									<listOptionValue builtIn="false" value="crmtd"/>
+									<listOptionValue builtIn="false" value="crosa"/>
 								</option>
 								<option id="nvcc.linker.option.paths.687332063" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib"/>
@@ -126,7 +128,7 @@
 									<listOptionValue builtIn="false" value="../src/encTrans"/>
 									<listOptionValue builtIn="false" value="../src"/>
 									<listOptionValue builtIn="false" value="../src/core"/>
-									<listOptionValue builtIn="false" value="../src/cr_osa/inc"/>
+									<listOptionValue builtIn="false" value="../include/osa"/>
 								</option>
 								<option id="nvcc.compiler.compileroptions.1323843527" name="Preprocessor options (-Xcompiler)" superClass="nvcc.compiler.compileroptions" valueType="stringList">
 									<listOptionValue builtIn="false" value="-fopenmp"/>
@@ -158,6 +160,8 @@
 									<listOptionValue builtIn="false" value="crgst"/>
 									<listOptionValue builtIn="false" value="v4l2"/>
 									<listOptionValue builtIn="false" value="crcore"/>
+									<listOptionValue builtIn="false" value="crmtd"/>
+									<listOptionValue builtIn="false" value="crosa"/>
 								</option>
 								<option id="nvcc.linker.option.paths.2055824705" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib"/>

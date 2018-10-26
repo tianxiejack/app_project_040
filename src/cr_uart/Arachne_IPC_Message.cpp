@@ -99,7 +99,7 @@ void SetReturnPack(Return_pack* value) {
 	return_pack = *value;
 	Cycle_time = return_pack.CycleTime;
 	send_buf[0] = 0xeb;
-	send_buf[1] = return_pack.payload.message_id;
+	send_buf[1] = 0x65;
 	send_buf[2] = return_pack.payload.Track_Deviation_X & 0xff;
 	send_buf[3] = (return_pack.payload.Track_Deviation_X >> 8) & 0xff;
 	send_buf[4] = return_pack.payload.Track_Deviation_Y & 0xff;

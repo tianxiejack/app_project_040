@@ -33,13 +33,17 @@ unsigned int itrkTime = 0;
 static Void * uart_dataRecv(Void * prm);
 static Void * uart_dataSend(Void * prm);
 
+int EncTransLevel,videoTransMode;
 
 void recvmsg_040(IPC_msg data)
 {
 	static bool b_secondTrk=false;
+	static bool b_mmtTrk=false;
 	static bool b_saveAxis = false;
+	unsigned int selectOk = 0;
 	unsigned char TimeSelect = 0;
 	unsigned char Time_Hour,Time_Minute,Time_Second;
+	static unsigned short secondTrk_XBak,secondTrk_YBak;
 	
 	CORE_CMD inCtrl, *pMsg = NULL;
 	pMsg = &inCtrl;
@@ -68,10 +72,6 @@ void recvmsg_040(IPC_msg data)
 	psendOsd->osd_core.osd_enDisp = pMsg->DispLever = data.payload.sen_mes.character_state;
 	app_ctrl_setDispGrade(pMsg);
 
-	//printf("jet +++ enMMT=%d\n",data.payload.Track_Search.MulTarget_Detect);
-	pMsg->enMTD = data.payload.Track_Search.MulTarget_Detect;
-	app_ctrl_setMMT(pMsg);
-
 	psendOsd->osd_core.osd_enZoom = pMsg->enZoomx = data.payload.MulTarget_Num.TV_SizeChage;
 	app_ctrl_setZoom(pMsg);
 
@@ -82,19 +82,23 @@ void recvmsg_040(IPC_msg data)
 	{
 		case Current_Mode_Lock:
 			pMsg->enTrk = false;
+			psendOsd->osd_core.osd_enSecondTrk = false;
 			app_ctrl_setTrkStat(pMsg);
 			break;
 		case Current_Mode_Collect:
 			pMsg->enTrk = false;
+			psendOsd->osd_core.osd_enSecondTrk = false;
 			app_ctrl_setTrkStat(pMsg);
 			break;
 		case Current_Mode_Manual:
 
 			pMsg->enTrk = false;
+			psendOsd->osd_core.osd_enSecondTrk = false;
 			app_ctrl_setTrkStat(pMsg);
 			break;
 		case Current_Mode_Scan:
 			pMsg->enTrk = false;
+			psendOsd->osd_core.osd_enSecondTrk = false;
 			app_ctrl_setTrkStat(pMsg);
 			break;
 		case Current_Mode_Tracking:	
@@ -105,14 +109,20 @@ void recvmsg_040(IPC_msg data)
 				psendOsd->osd_core.osd_enSecondTrk = false;
 				b_secondTrk = false;
 
-				pMsg->secondTrk_X = (data.payload.Track_Search.HighOrder_Hor <<8)|data.payload.Track_Search.LowOrder_Hor;
-				pMsg->secondTrk_Y = (data.payload.Track_Search.HighOrder_Ver <<8)|data.payload.Track_Search.LowOrder_Ver;
+				pMsg->secondTrk_X = secondTrk_XBak;//(data.payload.Track_Search.HighOrder_Hor <<8)|data.payload.Track_Search.LowOrder_Hor;
+				pMsg->secondTrk_Y = secondTrk_YBak;//(data.payload.Track_Search.HighOrder_Ver <<8)|data.payload.Track_Search.LowOrder_Ver;
 				
 				app_ctrl_setSearchTrk(pMsg);
 			}
-			
-			
-			app_ctrl_setTrkStat(pMsg);
+			else if(b_mmtTrk)
+			{
+				b_mmtTrk = false;
+
+				pMsg->nTarget_index = data.payload.MulTarget_Num.Mul_Number;
+				app_ctrl_setMMTTrk(pMsg);
+			}
+			else
+				app_ctrl_setTrkStat(pMsg);
 
 			if(data.payload.MulTarget_Num.bomen_size==Bomen_Size_Big)
 				pMsg->TrkWinSize = Bomen_Size_Big;
@@ -159,14 +169,30 @@ void recvmsg_040(IPC_msg data)
 			psendOsd->osd_core.osd_secondTrk_X = (data.payload.Track_Search.HighOrder_Hor <<8)|data.payload.Track_Search.LowOrder_Hor;
 			psendOsd->osd_core.osd_secondTrk_Y = (data.payload.Track_Search.HighOrder_Ver <<8)|data.payload.Track_Search.LowOrder_Ver;
 			
-			//printf("jet +++ H=%02x\n", (data.payload.Track_Search.HighOrder_Hor <<8)|data.payload.Track_Search.LowOrder_Hor);
+			if(psendOsd->osd_core.osd_secondTrk_X>(vcapWH[pMsg->chId][0]-50))
+				secondTrk_XBak = psendOsd->osd_core.osd_secondTrk_X = (vcapWH[pMsg->chId][0]-50);
+			else if(psendOsd->osd_core.osd_secondTrk_X<50)
+				secondTrk_XBak = psendOsd->osd_core.osd_secondTrk_X = 50;
+			else
+				secondTrk_XBak = psendOsd->osd_core.osd_secondTrk_X = (data.payload.Track_Search.HighOrder_Hor <<8)|data.payload.Track_Search.LowOrder_Hor;
+
+			if(psendOsd->osd_core.osd_secondTrk_Y>(vcapWH[pMsg->chId][1]-30))
+				secondTrk_YBak = psendOsd->osd_core.osd_secondTrk_Y = (vcapWH[pMsg->chId][1]-30);
+			else if(psendOsd->osd_core.osd_secondTrk_Y<30)
+				secondTrk_YBak = psendOsd->osd_core.osd_secondTrk_Y = 30;
+			else
+				secondTrk_YBak = psendOsd->osd_core.osd_secondTrk_Y = (data.payload.Track_Search.HighOrder_Ver <<8)|data.payload.Track_Search.LowOrder_Ver;
+
+			//printf("jet +++ W=%02x,secondTrk_XY=(%d,%d)\n", (data.payload.Track_Search.HighOrder_Hor <<8)|data.payload.Track_Search.LowOrder_Hor,secondTrk_XBak,secondTrk_YBak);
 			break;
 		case Current_Mode_Geografia_Search:
 			pMsg->enTrk = false;
+			psendOsd->osd_core.osd_enSecondTrk = false;
 			app_ctrl_setTrkStat(pMsg);
 			break;		
 		case Current_Mode_Serve:
 			pMsg->enTrk = false;
+			psendOsd->osd_core.osd_enSecondTrk = false;
 			app_ctrl_setTrkStat(pMsg);
 			
 			if(data.payload.Work_Pattern.Shaft_Start == 1)
@@ -216,13 +242,75 @@ void recvmsg_040(IPC_msg data)
 			break;
 		case Current_Mode_System_SelfInspection:
 			pMsg->enTrk = false;
+			psendOsd->osd_core.osd_enSecondTrk = false;
 			app_ctrl_setTrkStat(pMsg);
 			break;
 		default:
-				
 			break;
 	}
 
+	//printf("jet +++ enMMT=%d\n",data.payload.Track_Search.MulTarget_Detect);
+	pMsg->enMTD = data.payload.Track_Search.MulTarget_Detect;
+	if(pMsg->enMTD && (data.payload.Work_Pattern.cur_mode!=Current_Mode_Tracking))// && (data.payload.Work_Pattern.cur_mode!=Current_Mode_Track_Search))
+	{
+		app_ctrl_setMMT(pMsg);
+		
+		pMsg->nTarget_index = data.payload.MulTarget_Num.Mul_Number;
+		if((pMsg->nTarget_index<9)&&(pMsg->nTarget_index>0))
+		{
+			selectOk = app_ctrl_setMmtSelect(pMsg);
+			if(selectOk == 0x01)
+			{
+				//OSA_printf("jet +++ pMsg->nTarget_index=%d\n",pMsg->nTarget_index);
+				send_msg.payload.Self_Tr_S.mul_target_AVT = Multi_Target_AVT_YES;
+				b_mmtTrk = true;
+			}
+			else
+				send_msg.payload.Self_Tr_S.mul_target_AVT = Multi_Target_AVT_NO;
+		}
+	}
+	else
+	{
+		pMsg->enMTD = false;
+		app_ctrl_setMMT(pMsg);
+		send_msg.payload.Self_Tr_S.mul_target_AVT = Multi_Target_AVT_NA;
+	}
+
+	//*****************422Video start*****************//
+		
+	if(data.payload.Video_C.interface_rate==0x01)
+	{
+		pMsg->EncTransLevel = 0x00;
+		EncTransLevel = 0x01;
+	}
+	else if(data.payload.Video_C.interface_rate==0x02)
+	{
+		pMsg->EncTransLevel = 0x01;
+		EncTransLevel = 0x02;
+	}
+	else if(data.payload.Video_C.interface_rate==0x03)
+	{
+		pMsg->EncTransLevel = 0x02;
+		EncTransLevel = 0x03;
+	}
+	else
+	{
+		pMsg->EncTransLevel = 0x01;
+		EncTransLevel = 0x02;
+	}
+	
+	app_ctrl_set422Rate(pMsg);
+	
+	videoTransMode = pMsg->videoTransMode = data.payload.Video_C.video_transfer;
+	app_ctrl_set422TransMode(pMsg);
+
+	//OSA_printf("jet +++ pMsg->EncTransLevel=%d,rate=%d,transmode=%d,EncTransLevel=%d,videoTransMode=%d\n",pMsg->EncTransLevel,data.payload.Video_C.interface_rate,data.payload.Video_C.video_transfer,EncTransLevel,videoTransMode);
+
+	//*****************422Video end*****************//
+
+
+	//*****************osd start*****************//
+	
 	//printf("jet +++++ enlaser=%d,stat=%d\n",data.payload.sen_mes.Laser_state,data.payload.Laser_Mes.laser_state);
 	if(data.payload.sen_mes.Laser_state==0)
 		psendOsd->osd_core.osd_enLaser = false;
@@ -300,7 +388,8 @@ void recvmsg_040(IPC_msg data)
 	psendOsd->osd_core.osd_dispZoom = data.payload.Sensor_Image_EN.Infrared_Change;
 	psendOsd->osd_core.osd_dispFREnh = data.payload.Sensor_Image_EN.Sensor_Thermal;
 	psendOsd->osd_core.osd_dispTVEnh = data.payload.Sensor_Image_EN.Sensor_Tv_Enhance;
-	
+
+	//*****************osd end*****************//
 }
 
 void app_getvideostatus()
@@ -374,8 +463,6 @@ static Void * uart_dataSend(Void * prm)
 	while(1){
 		
 		OSA_semWait(&sendthrSem, OSA_TIMEOUT_FOREVER);
-
-		send_msg.payload.message_id = Message_Id_TV;
 		
 		if(send_core->m_stats.mainChId==Current_Video_TV)
 			send_msg.payload.current_video = Current_Video_TV;
@@ -386,6 +473,24 @@ static Void * uart_dataSend(Void * prm)
 
 		send_msg.payload.Senser_Aim_CurX = (int)send_core->m_stats.chn[send_core->m_stats.mainChId].axis.x;
 		send_msg.payload.Senser_Aim_CurY = (int)send_core->m_stats.chn[send_core->m_stats.mainChId].axis.y;
+
+		if(EncTransLevel == 0x01)
+			send_msg.payload.r_interface_rate = Interface_Rate_1;
+		else if(EncTransLevel == 0x02)
+			send_msg.payload.r_interface_rate = Interface_Rate_3;
+		else if(EncTransLevel == 0x03)
+			send_msg.payload.r_interface_rate = Interface_Rate_7;
+		else
+			send_msg.payload.r_interface_rate = Interface_Rate_NA;
+		
+		if(videoTransMode == 0x01)
+			send_msg.payload.Compress_Transfer = Video_Transfer_Tv_Single;
+		else if(videoTransMode == 0x02)
+			send_msg.payload.Compress_Transfer = Video_Transfer_Thermal_Sigle;
+		else if(videoTransMode == 0x03)
+			send_msg.payload.Compress_Transfer = Video_Transfer_Together;
+		else
+			send_msg.payload.Compress_Transfer = Video_Transfer_NA;
 		
 		if(send_core->m_stats.enableTrack)
 		{
@@ -404,7 +509,7 @@ static Void * uart_dataSend(Void * prm)
 					itrkTime=OSA_getCurTimeInMsec();
 				}
 				
-				if((OSA_getCurTimeInMsec()-itrkTime)>5000)
+				if((OSA_getCurTimeInMsec()-itrkTime)>5000)// assi time
 					send_msg.payload.Self_Tr_S.track_state=Track_State_Lose;
 				else
 					send_msg.payload.Self_Tr_S.track_state=Track_State_Memory;
