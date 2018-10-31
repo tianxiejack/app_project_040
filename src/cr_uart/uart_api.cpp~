@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 //extern "C"{
-#include"Arachne_Ipc_Message.h"
+#include"Arachne_Ipc_Message.h";
 //}
 
 #include "msgProc.hpp"
