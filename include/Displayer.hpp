@@ -17,7 +17,7 @@
 
 using namespace std;
 using namespace cv;
-using namespace cr_osa;
+//using namespace cr_osa;
 
 typedef struct _ds_size{
 	int w;
