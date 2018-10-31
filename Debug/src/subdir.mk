@@ -6,7 +6,6 @@
 CPP_SRCS += \
 ../src/globalData.cpp \
 ../src/main.cpp \
-../src/main_cap.cpp \
 ../src/main_com.cpp \
 ../src/main_core.cpp \
 ../src/main_gst.cpp \
@@ -16,7 +15,6 @@ CPP_SRCS += \
 OBJS += \
 ./src/globalData.o \
 ./src/main.o \
-./src/main_cap.o \
 ./src/main_com.o \
 ./src/main_core.o \
 ./src/main_gst.o \
@@ -26,7 +24,6 @@ OBJS += \
 CPP_DEPS += \
 ./src/globalData.d \
 ./src/main.d \
-./src/main_cap.d \
 ./src/main_com.d \
 ./src/main_core.d \
 ./src/main_gst.d \
