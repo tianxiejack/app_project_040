@@ -12,9 +12,6 @@
 
 #define OSA_BUF_ID_INVALID    (-1)
 
-namespace cr_osa
-{
-
 typedef struct {
   int       chId;
   int 		bufferId;
@@ -31,6 +28,7 @@ typedef struct {
   int       flags;
   void 		*physAddr;
   void 		*virtAddr;
+
 } OSA_BufInfo;
 
 typedef struct {
@@ -74,8 +72,6 @@ OSA_BufInfo *OSA_bufGetBufInfo(OSA_BufHndl *hndl, int bufId);
 int OSA_bufGetEmptyCount(OSA_BufHndl *hndl);
 int OSA_bufGetFullCount(OSA_BufHndl *hndl);
 int OSA_bufGetBufcount(OSA_BufHndl *hndl,int mod);
-
-};
 
 #endif /* _OSA_BUF_H_ */
 
