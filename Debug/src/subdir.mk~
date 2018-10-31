@@ -5,7 +5,6 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/globalData.cpp \
-../src/gst_capture.cpp \
 ../src/main.cpp \
 ../src/main_cap.cpp \
 ../src/main_com.cpp \

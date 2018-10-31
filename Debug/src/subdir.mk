@@ -15,7 +15,6 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/globalData.o \
-./src/gst_capture.o \
 ./src/main.o \
 ./src/main_cap.o \
 ./src/main_com.o \
@@ -26,7 +25,6 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/globalData.d \
-./src/gst_capture.d \
 ./src/main.d \
 ./src/main_cap.d \
 ./src/main_com.d \
