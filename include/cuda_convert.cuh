@@ -44,6 +44,9 @@ void gpuConvertYUYVtoRGB(unsigned char *src, unsigned char *dst,
 void gpuConvertYUYVtoBGR(unsigned char *src, unsigned char *dst,
 		unsigned int width, unsigned int height);
 
+void gpuConvertYUYVtoGray(unsigned char *src, unsigned char *dst,
+		unsigned int width, unsigned int height);
+
 void gpuConvertYUYVtoI420(unsigned char *src, unsigned char *dst,
 		unsigned int width, unsigned int height);
 

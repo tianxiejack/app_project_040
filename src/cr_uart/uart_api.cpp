@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 //extern "C"{
-#include"Arachne_Ipc_Message.h"
+#include"Arachne_Ipc_Message.h";
 //}
 
 #include "msgProc.hpp"
@@ -103,6 +103,8 @@ void recvmsg_040(IPC_msg data)
 			break;
 		case Current_Mode_Tracking:	
 			pMsg->enTrk = true;
+
+			app_ctrl_setTrkStat(pMsg);
 			
 			if(b_secondTrk)
 			{
@@ -121,15 +123,8 @@ void recvmsg_040(IPC_msg data)
 				pMsg->nTarget_index = data.payload.MulTarget_Num.Mul_Number;
 				app_ctrl_setMMTTrk(pMsg);
 			}
-			else
-				app_ctrl_setTrkStat(pMsg);
 
-			if(data.payload.MulTarget_Num.bomen_size==Bomen_Size_Big)
-				pMsg->TrkWinSize = Bomen_Size_Big;
-			else if(data.payload.MulTarget_Num.bomen_size==Bomen_Size_Middle)
-				pMsg->TrkWinSize = Bomen_Size_Middle;
-			else if(data.payload.MulTarget_Num.bomen_size==Bomen_Size_Small)
-				pMsg->TrkWinSize = Bomen_Size_Small;
+			pMsg->TrkWinSize = (int)data.payload.MulTarget_Num.bomen_size;
 			app_ctrl_setTrkBomen(pMsg);
 			//printf("jet +++ xref=%d,yref=%d\n", data.payload.Track_Trim.move_track_hor, data.payload.Track_Trim.move_track_ver);
 			switch(data.payload.Track_Trim.move_track_hor)
@@ -348,24 +343,14 @@ void recvmsg_040(IPC_msg data)
 	}
 
 	//printf("jet +++ osd_enLA=%d,laser_code=%d\n",psendOsd->osd_core.osd_enLA,data.payload.Laser_Mes.laser_code);
-	if(data.payload.Laser_Mes.laser_mes_d==Laser_Mes_D_Show)
-		psendOsd->osd_core.osd_enLA = true;
-	else
-		psendOsd->osd_core.osd_enLA = false;
-
+	psendOsd->osd_core.osd_enLA = (bool)data.payload.Laser_Mes.laser_mes_d;
 	psendOsd->osd_core.osd_laserCode = data.payload.Laser_Mes.laser_code;
 
 	//printf("jet +++ tvFov=%d,frFov=%d\n",data.payload.Sensor_Tv_Angle,data.payload.Sensor_Thermal_Angle);
 	psendOsd->osd_core.osd_TVFovAngle = data.payload.Sensor_Tv_Angle;
 	psendOsd->osd_core.osd_FRFovAngle = data.payload.Sensor_Thermal_Angle;
-	psendOsd->osd_core.osd_LMC = data.payload.Work_Pattern.LMC;
-	
+	psendOsd->osd_core.osd_LMC = data.payload.Work_Pattern.LMC;	
 	psendOsd->osd_core.osd_panAngle = data.payload.TurretAngle_Hor;
-	//if(0 == (data.payload.TurretAngle_Ver & 0x80000000))
-		//psendOsd->osd_core.osd_tiltAngle = data.payload.TurretAngle_Ver & 0x7fffffff;
-	//else
-		//psendOsd->osd_core.osd_tiltAngle = ((~(abs(data.payload.TurretAngle_Ver & 0x7fffffff)))+1) | 0x80000000;
-
 	psendOsd->osd_core.osd_tiltAngle = data.payload.TurretAngle_Ver;
 
 	//printf("jet +++ pan=%d,tilt=%x,recv=%d\n",psendOsd->osd_core.osd_panAngle,psendOsd->osd_core.osd_tiltAngle,data.payload.TurretAngle_Ver);
@@ -404,26 +389,12 @@ void app_getvideostatus()
 	else if(Hard_getfirstatus() == 1)
 		unitFaultStat |= (0<<1);
 
+	send_msg.payload.Self_Tr_S.video_input = (Video_Input)unitFaultStat;
 	if(unitFaultStat==0x00)
-	{
-		send_msg.payload.Self_Tr_S.video_input = Video_Input_Normal;
 		send_msg.payload.Self_Tr_S.self_state = Self_State_Normal;
-	}
-	else if(unitFaultStat==0x01)
-	{
-		send_msg.payload.Self_Tr_S.video_input = Video_Input_TV_Off;
+	else
 		send_msg.payload.Self_Tr_S.self_state = Self_State_Abnomal;
-	}
-	else if(unitFaultStat==0x02)
-	{
-		send_msg.payload.Self_Tr_S.video_input = Video_Input_Thermal_Off;
-		send_msg.payload.Self_Tr_S.self_state = Self_State_Abnomal;
-	}
-	else if(unitFaultStat==0x03)
-	{
-		send_msg.payload.Self_Tr_S.video_input = Video_Input_Together_Off;
-		send_msg.payload.Self_Tr_S.self_state = Self_State_Abnomal;
-	}
+	
 	//OSA_printf(" %d: unitFault change from %x to %x\n", OSA_getCurTimeInMsec(),
 			//send_msg.payload.Self_Tr_S.video_input, unitFaultStat);
 		
@@ -463,35 +434,18 @@ static Void * uart_dataSend(Void * prm)
 	while(1){
 		
 		OSA_semWait(&sendthrSem, OSA_TIMEOUT_FOREVER);
-		
-		if(send_core->m_stats.mainChId==Current_Video_TV)
-			send_msg.payload.current_video = Current_Video_TV;
-		else if(send_core->m_stats.mainChId==Current_Video_Thermal)
-			send_msg.payload.current_video = Current_Video_Thermal;
-		
-		//printf("jet +++ xy(%d,%d)\n",send_msg.payload.Track_Deviation_X,send_msg.payload.Track_Deviation_Y);
 
+		/*************************************************************/
+		//reply curVideoStat,curAxis_XY,sync422 rate,sync422 videoTransMode
+		send_msg.payload.current_video = (Current_Video)send_core->m_stats.mainChId;				
 		send_msg.payload.Senser_Aim_CurX = (int)send_core->m_stats.chn[send_core->m_stats.mainChId].axis.x;
 		send_msg.payload.Senser_Aim_CurY = (int)send_core->m_stats.chn[send_core->m_stats.mainChId].axis.y;
+		send_msg.payload.r_interface_rate = (Interface_Rate)EncTransLevel;
+		send_msg.payload.Compress_Transfer = (Video_Transfer)videoTransMode;
+		/*************************************************************/
 
-		if(EncTransLevel == 0x01)
-			send_msg.payload.r_interface_rate = Interface_Rate_1;
-		else if(EncTransLevel == 0x02)
-			send_msg.payload.r_interface_rate = Interface_Rate_3;
-		else if(EncTransLevel == 0x03)
-			send_msg.payload.r_interface_rate = Interface_Rate_7;
-		else
-			send_msg.payload.r_interface_rate = Interface_Rate_NA;
-		
-		if(videoTransMode == 0x01)
-			send_msg.payload.Compress_Transfer = Video_Transfer_Tv_Single;
-		else if(videoTransMode == 0x02)
-			send_msg.payload.Compress_Transfer = Video_Transfer_Thermal_Sigle;
-		else if(videoTransMode == 0x03)
-			send_msg.payload.Compress_Transfer = Video_Transfer_Together;
-		else
-			send_msg.payload.Compress_Transfer = Video_Transfer_NA;
-		
+		/*************************************************************/
+		//reply Trk_XY,Trk_state
 		if(send_core->m_stats.enableTrack)
 		{
 			if(send_core->m_stats.iTrackorStat==0x01)
@@ -509,7 +463,7 @@ static Void * uart_dataSend(Void * prm)
 					itrkTime=OSA_getCurTimeInMsec();
 				}
 				
-				if((OSA_getCurTimeInMsec()-itrkTime)>5000)// assi time
+				if((OSA_getCurTimeInMsec()-itrkTime)>ASSI_TIME)// assi time
 					send_msg.payload.Self_Tr_S.track_state=Track_State_Lose;
 				else
 					send_msg.payload.Self_Tr_S.track_state=Track_State_Memory;
@@ -540,7 +494,7 @@ static Void * uart_dataSend(Void * prm)
 			send_msg.payload.Track_Deviation_X = 0x00;
 			send_msg.payload.Track_Deviation_Y = 0x00;
 		}
-
+		/*************************************************************/
 		SetReturnPack(&send_msg);
 	}
 }

@@ -2,7 +2,7 @@
 #include "uart_api.hpp"
 
 //extern "C"{
-#include"Arachne_Ipc_Message.h"
+#include"Arachne_Ipc_Message.h";
 //}
 
 void recvmsg_040(IPC_msg data);

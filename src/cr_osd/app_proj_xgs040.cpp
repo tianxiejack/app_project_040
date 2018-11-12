@@ -1072,8 +1072,8 @@ int APP_init_graphic_parms(int chId, int winId, void *pPrm)
 		rectParam->objType 	= grpx_ObjId_SecondTrk_Cross;
 		rectParam->x 		= 300;	// 30+16
 		rectParam->y 		= 500;	// 50+20/2-linePixels
-		rectParam->width 		= 50;
-		rectParam->height 	= 36;
+		rectParam->width 		= 56;
+		rectParam->height 	= 40;
 		rectParam->linePixels 	= 2;
 		break;
 

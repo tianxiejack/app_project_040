@@ -9,11 +9,12 @@
 #define CRCORE_HPP_
 
 /***********************************************
- * core version 1.0.0.1
+ * core version 1.0.3
  */
 #include "osa.h"
 #include "osa_sem.h"
 
+#define CORE_1001_VERSION_  "1.0.3"
 #define COREID_1001			(0x10010000)
 #define COREID_1001_040		(CORNID_1001 + 1)
 
@@ -28,10 +29,11 @@ public:
 };
 
 #define CORE_CHN_MAX	(4)
-#define CORE_TGT_NUM_MAX	(12)
+#define CORE_TGT_NUM_MAX	(32)
 typedef struct{
 	int valid;
 	cv::Rect Box;
+	cv::Point2f pos;
 }CORE_TGT_INFO;
 typedef struct _core_1001_chn_stats{
 	cv::Size imgSize;
@@ -53,6 +55,7 @@ typedef struct _core_1001_stats{
 	cv::Size trackWinSize;
 	CORE_TGT_INFO tgts[CORE_TGT_NUM_MAX];
 	CORE1001_CHN_STATS chn[CORE_CHN_MAX];
+	CORE_TGT_INFO blob;
 }CORE1001_STATS;
 
 typedef struct _core_1001_chnInfo_init{
@@ -67,6 +70,7 @@ typedef struct _core_1001_init{
 	bool bEncoder;
 	bool bRender;
 	bool bHideOSD;
+	cv::Size renderSize;
 	int renderFPS;
 	int *encoderParamTab[3];
 	char *encStreamIpaddr;
@@ -84,6 +88,9 @@ public:
 	virtual int enableMotionDetect(bool enable) = 0;
 	virtual int enableEnh(bool enable) = 0;
 	virtual int enableEnh(int chId, bool enable) = 0;
+	virtual int enableBlob(bool enable) = 0;
+	virtual int bindBlend(int blendchId, cv::Matx44f matric) = 0;
+	virtual int bindBlend(int chId, int blendchId, cv::Matx44f matric) = 0;
 	virtual int enableOSD(bool enable) = 0;
 	virtual int enableEncoder(int chId, bool enable) = 0;
 	virtual int setAxisPos(cv::Point pos) = 0;
@@ -92,7 +99,8 @@ public:
 	virtual int setTrackCoast(int nFrames) = 0;
 	virtual int setEZoomx(int value) = 0;
 	virtual int setEZoomx(int chId, int value) = 0;
-	virtual int setOSDColor(int yuv) = 0;
+	virtual int setOSDColor(int yuv, int thickness = 2) = 0;
+	virtual int setOSD(cv::Scalar color, int thickness = 2) = 0;
 	virtual int setEncTransLevel(int iLevel) = 0;
 
 	CORE1001_STATS m_stats;
