@@ -97,30 +97,55 @@ void app_ctrl_setSearchTrk(CORE_CMD * pInCmd)
 void app_ctrl_setAxisPos(int dir, int step)
 {
 	cv::Point2f curPos = uart_core->m_stats.chn[uart_core->m_stats.mainChId].axis;
-	
+
+	//OSA_printf("jet +++ dir=%d,curPosXY=(%0.2f,%0.2f)\n",dir,curPos.x,curPos.y);
 	switch(dir)
 	{
 		case eAxis_ref_up:
 			{
-				cv::Point pos(curPos.x+0.5, curPos.y-0.5-1*step);
+				cv::Point pos(curPos.x, curPos.y-1*step);
 				uart_core->setAxisPos(pos);
 			}
 			break;
 		case eAxis_ref_down:
 			{
-				cv::Point pos(curPos.x+0.5, curPos.y+0.5+1*step);
+				cv::Point pos(curPos.x, curPos.y+1*step);
 				uart_core->setAxisPos(pos);
 			}
 			break;
 		case eAxis_ref_left:
 			{
-				cv::Point pos(curPos.x-0.5-1*step, curPos.y+0.5);
+				cv::Point pos(curPos.x-1*step, curPos.y);
 				uart_core->setAxisPos(pos);
 			}
 			break;
 		case eAxis_ref_right:
 			{
-				cv::Point pos(curPos.x+0.5+1*step, curPos.y+0.5);
+				cv::Point pos(curPos.x+1*step, curPos.y);
+				uart_core->setAxisPos(pos);
+			}
+			break;
+		case eAxis_ref_upleft:
+			{
+				cv::Point pos(curPos.x-1*step, curPos.y-1*step);
+				uart_core->setAxisPos(pos);
+			}
+			break;
+		case eAxis_ref_upright:
+			{
+				cv::Point pos(curPos.x+1*step, curPos.y-1*step);
+				uart_core->setAxisPos(pos);
+			}
+			break;
+		case eAxis_ref_downleft:
+			{
+				cv::Point pos(curPos.x-1*step, curPos.y+1*step);
+				uart_core->setAxisPos(pos);
+			}
+			break;
+		case eAxis_ref_downright:
+			{
+				cv::Point pos(curPos.x+1*step, curPos.y+1*step);
 				uart_core->setAxisPos(pos);
 			}
 			break;
@@ -133,38 +158,63 @@ void app_ctrl_setAimPos(int dir, int step)
 {
 	switch(dir)
 	{
-	case eTrk_ref_up:
-		{
-			cv::Point raf(0, -1*step);
-			uart_core->setTrackPosRef(raf);
-		}
-		break;
-	case eTrk_ref_down:
-		{
-			cv::Point raf(0, step);
-			uart_core->setTrackPosRef(raf);
-		}
-		break;
-	case eTrk_ref_left:
-		{
-			cv::Point raf(-1*step, 0);
-			uart_core->setTrackPosRef(raf);
-		}
-		break;
-	case eTrk_ref_right:
-		{
-			cv::Point raf(step, 0);
-			uart_core->setTrackPosRef(raf);
-		}
-		break;
-	default:
-		break;
+		case eTrk_ref_up:
+			{
+				cv::Point raf(0, -1*step);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;
+		case eTrk_ref_down:
+			{
+				cv::Point raf(0, step);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;
+		case eTrk_ref_left:
+			{
+				cv::Point raf(-1*step, 0);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;
+		case eTrk_ref_right:
+			{
+				cv::Point raf(step, 0);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;
+		case eTrk_ref_upleft:
+			{
+				cv::Point raf(-1*step, -1*step);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;
+		case eTrk_ref_upright:
+			{
+				cv::Point raf(step, -1*step);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;
+		case eTrk_ref_downleft:
+			{
+				cv::Point raf(-1*step, step);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;
+		case eTrk_ref_downright:
+			{
+				cv::Point raf(step, step);
+				uart_core->setTrackPosRef(raf);
+			}
+			break;		
+		default:
+			break;
 	}
 }
 
 void app_ctrl_SaveAxisPos()
 {
 	uart_core->saveAxisPos();
+	OSA_printf("jet +++save Axis OK !\n");
 }
 
 void app_ctrl_setDispColor(CORE_CMD * pInCmd)

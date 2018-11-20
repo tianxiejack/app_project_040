@@ -58,20 +58,28 @@ static int fovSize[2][5] =
 
 typedef enum
 {
-    eAxis_ref_no		,
-    eAxis_ref_left		,
-    eAxis_ref_right	,
-    eAxis_ref_up		,
-    eAxis_ref_down	,
+    eAxis_ref_no			,
+    eAxis_ref_left			,
+    eAxis_ref_right		,
+    eAxis_ref_up			,
+    eAxis_ref_down		,
+    eAxis_ref_upleft		,
+    eAxis_ref_upright		,
+    eAxis_ref_downleft	,
+    eAxis_ref_downright	,    
 }Axis_move;
 
 typedef enum
 {
-    eTrk_ref_no		,
-    eTrk_ref_left		,
-    eTrk_ref_right		,
-    eTrk_ref_up		,
-    eTrk_ref_down	,
+    eTrk_ref_no			,
+    eTrk_ref_left			,
+    eTrk_ref_right			,
+    eTrk_ref_up			,
+    eTrk_ref_down		,
+    eTrk_ref_upleft		,
+    eTrk_ref_upright		,
+    eTrk_ref_downleft		,
+    eTrk_ref_downright	,    
 }TrkWin_move;
 
 typedef enum {

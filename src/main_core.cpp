@@ -222,7 +222,10 @@ static void keyboard_event(unsigned char key, int x, int y)
 		break;
 	case 'i'://move up
 		if(iMenu == 0 && trkEnable)
+		{
 			Track_armRefine(KEYDIR_UP);
+			Track_armRefine(KEYDIR_LEFT);
+		}
 		if(iMenu == 1)
 			Axis_move(KEYDIR_UP);
 		break;

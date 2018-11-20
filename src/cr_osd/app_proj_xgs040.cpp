@@ -209,10 +209,16 @@ Int16 APP_text_genContext(int chId, int winId, char * str, int strBufLen, Int16 
 			pStr += lineStrLen;
 
 			
-			if(precvOsd_text->osd_core.osd_enZoom||precvOsd_text->osd_core.osd_dispZoom)
+			/*if(precvOsd_text->osd_core.osd_enZoom||precvOsd_text->osd_core.osd_dispZoom)
 				sprintf(pStr, "2X");
 			else
-				sprintf(pStr, "  ");
+				sprintf(pStr, "  ");*/
+			if(precvOsd_text->osd_core.osd_enZoom&&(chId==0))
+				sprintf(pStr, "2X");
+			else if(precvOsd_text->osd_core.osd_dispZoom&&(chId==1))
+				sprintf(pStr, "2X");
+			else
+				sprintf(pStr, "  ");	
 			lineStrLen = textLen[2];
 			pStr += lineStrLen;
 			
@@ -569,7 +575,18 @@ Int16 APP_text_genContext(int chId, int winId, char * str, int strBufLen, Int16 
 	case GRPX_WINID_INFO_MSG_TEXT:
 		{			
 
-			if(precvOsd_text->osd_core.osd_enEnh||precvOsd_text->osd_core.osd_dispFREnh||precvOsd_text->osd_core.osd_dispTVEnh)
+			/*if(precvOsd_text->osd_core.osd_enEnh||precvOsd_text->osd_core.osd_dispFREnh||precvOsd_text->osd_core.osd_dispTVEnh)
+				sprintf((pStr), "IE");
+			else
+				sprintf((pStr), "  ");*/
+
+			if((precvOsd_text->osd_core.chId==0)&&precvOsd_text->osd_core.osd_enEnh&&(chId==0))
+				sprintf((pStr), "IE");
+			else if((precvOsd_text->osd_core.chId==1)&&precvOsd_text->osd_core.osd_enEnh&&(chId==1))
+				sprintf((pStr), "IE");
+			else if(precvOsd_text->osd_core.osd_dispTVEnh&&(chId==0))
+				sprintf((pStr), "IE");
+			else if(precvOsd_text->osd_core.osd_dispFREnh&&(chId==1))
 				sprintf((pStr), "IE");
 			else
 				sprintf((pStr), "  ");
@@ -597,15 +614,20 @@ Int16 APP_text_genContext(int chId, int winId, char * str, int strBufLen, Int16 
 			if(laserCnt > 0xFFFFFFFF)
 				laserCnt = 0;
 			laserCnt ++;
-			
-			if(precvOsd_text->osd_core.osd_AxisMode)
+
+			//printf("jet +++ core_chId=%d,cmd_chId=%d\n",xgs040_core->m_stats.mainChId,precvOsd_text->osd_core.chId);
+			if(precvOsd_text->osd_core.osd_AxisMode&&(xgs040_core->m_stats.mainChId==0)&&(chId==0))
+				sprintf(pStr, "Bx:%4d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.x);
+			else if(precvOsd_text->osd_core.osd_AxisMode&&(xgs040_core->m_stats.mainChId==1)&&(chId==1))
 				sprintf(pStr, "Bx:%4d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.x);
 			else
 				sprintf(pStr, "       ");
 			lineStrLen = textLen[0];
 			pStr += lineStrLen;
 
-			if(precvOsd_text->osd_core.osd_AxisMode)
+			if(precvOsd_text->osd_core.osd_AxisMode&&(xgs040_core->m_stats.mainChId==0)&&(chId==0))
+				sprintf(pStr, "By:%4d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.y);
+			else if(precvOsd_text->osd_core.osd_AxisMode&&(xgs040_core->m_stats.mainChId==1)&&(chId==1))
 				sprintf(pStr, "By:%4d", (int)xgs040_core->m_stats.chn[xgs040_core->m_stats.mainChId].axis.y);
 			else
 				sprintf(pStr, "       ");

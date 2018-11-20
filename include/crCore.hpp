@@ -99,8 +99,8 @@ public:
 	virtual int setTrackCoast(int nFrames) = 0;
 	virtual int setEZoomx(int value) = 0;
 	virtual int setEZoomx(int chId, int value) = 0;
-	virtual int setOSDColor(int yuv, int thickness = 2) = 0;
-	virtual int setOSD(cv::Scalar color, int thickness = 2) = 0;
+	virtual int setOSDColor(int yuv, int thickness = 1) = 0;
+	virtual int setOSD(cv::Scalar color, int thickness = 1) = 0;
 	virtual int setEncTransLevel(int iLevel) = 0;
 
 	CORE1001_STATS m_stats;

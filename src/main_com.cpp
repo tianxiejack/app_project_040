@@ -4,6 +4,8 @@
  *  Created on: Sep 27, 2018
  *      Author: wzk
  */
+
+#include <opencv2/opencv.hpp>
 #include <glew.h>
 #include <glut.h>
 #include <freeglut_ext.h>
@@ -17,31 +19,38 @@
 #include "cr_timer/setTimer.h"
 #include "cr_osd/osd_graph.h"
 #include "cr_gpio/gpio040.h"
+#include "main.h"
+
+using namespace cv;
 
 #define WHITECOLOR 		0x008080FF
-#define YELLOWCOLOR 	0x009110D2
+#define YELLOWCOLOR 		0x009110D2
 #define CRAYCOLOR		0x0010A6AA
 #define GREENCOLOR		0x00223691
 #define MAGENTACOLOR	0x00DECA6A
-#define REDCOLOR		0x00F05A51
+#define REDCOLOR			0x00F05A51
 #define BLUECOLOR		0x006EF029
 #define BLACKCOLOR		0x00808010
 #define BLANKCOLOR		0x00000000
 
 static ICore_1001 *core = NULL;
 static bool osdupdate=false;
+static bool g_selfTest=false;
 void processFrame_core_com(int cap_chid,unsigned char *src, struct v4l2_buffer capInfo, int format)
 {
 	if(core != NULL)
 		core->processFrame(cap_chid, src, capInfo, format);
 
-	if(osdupdate)
+	if(!g_selfTest)
 	{
-		osd_grpxUpdate();
-		osdupdate=false;
+		if(osdupdate)
+		{
+			osd_grpxUpdate();
+			osdupdate=false;
+		}
+		else
+			osdupdate=true;
 	}
-	else
-		osdupdate=true;
 }
 
 enum {
@@ -52,14 +61,15 @@ enum {
 static int iMenu = 0;
 static void keyboard_event(unsigned char key, int x, int y)
 {
-	cv::Size winSize;
+	static cv::Size winSize(80, 60);
 	static int chId = 0;
 	static int fovId[2] = {0,0};
 	static bool mmtdEnable = false;
 	static bool trkEnable = false;
-
-	winSize.width = 80; winSize.height = 60;
-	OSA_waitMsecs(1000000);
+	static bool motionDetect = false;
+	static bool blobEnable = false;
+	if(!g_selfTest)
+		OSA_waitMsecs(1000000);
 	
 	char strMenus[2][1024] ={
 			"----------------------------------------\n"
@@ -78,6 +88,10 @@ static void keyboard_event(unsigned char key, int x, int y)
 			" [m] Setup Axis                         \n"
 			" [n] Start/Pause Encoder transfer       \n"
 			" [u] Change EncTrans level (0/1/2)      \n"
+			" [o] Enable/Disable motion detect       \n"
+			" [p] Change Pinp channel ID (0/1/null)  \n"
+			" [r] Bind/Unbind blend TV BY Flr        \n"
+			" [s] Enable/Disable Blob detect         \n"
 			" [1].[5] Enable Track By MMTD           \n"
 			" [esc][q]Quit                           \n"
 			"--> ",
@@ -102,6 +116,9 @@ static void keyboard_event(unsigned char key, int x, int y)
 		if(chId == 0)
 			fovId[chId] = (fovId[chId]<4-1) ? (fovId[chId]+1) : 0;
 		chId = 0;
+		winSize.width = 80;
+		winSize.height = 60;
+		
 		core->setMainChId(chId, fovId[chId], 0, winSize);
 		break;
 	case 'f':
@@ -126,6 +143,10 @@ static void keyboard_event(unsigned char key, int x, int y)
 	case 'b':
 		mmtdEnable ^=1;
 		core->enableMMTD(mmtdEnable, 8);
+		break;
+	case 'o':
+		motionDetect ^=1;
+		core->enableMotionDetect(motionDetect);
 		break;
 	case 'c':
 		static bool enhEnable[2] = {false, false};
@@ -158,9 +179,12 @@ static void keyboard_event(unsigned char key, int x, int y)
 	case '3':
 	case '4':
 	case '5':
+	case '6':
+	case '7':
+	case '8':	
 		if(chId == 1){
-			winSize.width *= 1080.f/1920;
-			winSize.height *= 1024.f/1080;
+			winSize.width = 60;
+			winSize.height = 54;
 		}
 		if(core->enableTrackByMMTD(key-'1', &winSize, false)==OSA_SOK){
 			trkEnable = true;
@@ -181,7 +205,72 @@ static void keyboard_event(unsigned char key, int x, int y)
 	case 's':
 		if(iMenu == 1)
 			core->saveAxisPos();
+		else{
+			blobEnable ^= 1;
+			core->enableBlob(blobEnable);
+		}
 		break;
+	case 'p':
+		static int subChId = -1;
+		subChId++;
+		if(subChId==2)
+			subChId = -1;
+		core->setSubChId(subChId);
+		break;
+	case 'r':
+	{
+		static float fScale1,fScale2;
+		static float fRotate;
+		static float fTranslate1,fTranslate2;
+		
+		static int blendchId = -1;
+		blendchId = (blendchId == -1) ? 1 : -1;
+
+		if(blendchId==1)
+		{
+			FileStorage fr("ConfigFusion.yml",FileStorage::READ);
+
+			if(fr.isOpened())
+			{
+				//printf("\n1jet +++ fScale=(%0.2f,%0.2f),fRotate=%0.2f,fTranslate=(%0.2f,%0.2f)\n",fScale1,fScale2,fRotate,fTranslate1,fTranslate2);
+				fr["cfg_1"]>>fScale1;
+				fr["cfg_2"]>>fScale2;
+				fr["cfg_3"]>>fRotate;
+				fr["cfg_4"]>>fTranslate1;
+				fr["cfg_5"]>>fTranslate2;
+			}
+			else
+			{
+				fScale1 = 1.0;
+				fScale2 = 1.0;
+				fRotate = 0.0;
+				fTranslate1 = 0.0;
+				fTranslate2 = 0.0;
+				//printf("\n2jet +++ fScale=(%0.2f,%0.2f),fRotate=%0.2f,fTranslate=(%0.2f,%0.2f)\n",fScale1,fScale2,fRotate,fTranslate1,fTranslate2);
+			}
+			
+
+		}
+		cv::Matx44f matricScale;
+		cv::Matx44f matricRotate;
+		cv::Matx44f matricTranslate;
+		matricScale = cv::Matx44f::eye();
+		matricRotate = cv::Matx44f::eye();
+		matricTranslate = cv::Matx44f::eye();
+		matricScale.val[0] = fScale1;
+		matricScale.val[5] = fScale2;
+		float rads = float(fRotate) * 0.0174532925f;
+		matricRotate.val[0] = cos(rads);
+		matricRotate.val[1] = -sin(rads);
+		matricRotate.val[4] = sin(rads);
+		matricRotate.val[5] = cos(rads);
+		matricTranslate.val[3] = fTranslate1;
+		matricTranslate.val[7] = fTranslate2;
+		//printf("\n3jet +++ fScale=(%0.2f,%0.2f),fTranslate=(%0.2f,%0.2f)\n",matricScale.val[0],matricScale.val[5],matricTranslate.val[3],matricTranslate.val[7]);
+		core->bindBlend(0, blendchId, (matricTranslate*matricRotate*matricScale).t());
+	}
+		break;
+
 	case 'q':
 	case 27:
 		if(iMenu == 0)
@@ -306,11 +395,32 @@ int main_core_com(int argc, char **argv)
 	bool bRender = false;
 	static bool bLoop = true;
 
+	#if 0
 	if(argc>=2){
 		bRender = atoi(argv[1]);
 	}
-	
-	app_thrCreat();
+	#else
+	if(argc>=2)
+	{
+		if(strcmp(argv[1], "dis") == 0)
+		{
+			bRender = true;
+			g_selfTest = true;
+		}
+		else
+		{
+			bRender = false;
+			g_selfTest = false;
+		}
+	}
+	else
+	{
+		bRender = false;
+		g_selfTest = false;
+	}
+	#endif
+	if(!g_selfTest)
+		app_thrCreat();
 	
 	core = (ICore_1001 *)ICore::Qury(COREID_1001);
 	CORE1001_INIT_PARAM initParam;

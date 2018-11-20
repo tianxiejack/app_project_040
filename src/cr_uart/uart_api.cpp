@@ -72,9 +72,12 @@ void recvmsg_040(IPC_msg data)
 	psendOsd->osd_core.osd_enDisp = pMsg->DispLever = data.payload.sen_mes.character_state;
 	app_ctrl_setDispGrade(pMsg);
 
-	psendOsd->osd_core.osd_enZoom = pMsg->enZoomx = data.payload.MulTarget_Num.TV_SizeChage;
-	app_ctrl_setZoom(pMsg);
-
+	if(pMsg->chId == 0)//zoom only TV
+	{
+		psendOsd->osd_core.osd_enZoom = pMsg->enZoomx = data.payload.MulTarget_Num.TV_SizeChage;
+		app_ctrl_setZoom(pMsg);
+	}
+	
 	//printf("jet +++ TrkWin=%d\n",data.payload.MulTarget_Num.bomen_size);
 	
 	psendOsd->osd_core.osd_WorkMode = data.payload.Work_Pattern.cur_mode;
@@ -127,35 +130,23 @@ void recvmsg_040(IPC_msg data)
 			pMsg->TrkWinSize = (int)data.payload.MulTarget_Num.bomen_size;
 			app_ctrl_setTrkBomen(pMsg);
 			//printf("jet +++ xref=%d,yref=%d\n", data.payload.Track_Trim.move_track_hor, data.payload.Track_Trim.move_track_ver);
-			switch(data.payload.Track_Trim.move_track_hor)
-			{
-				case Move_Track_Hor_Left:
-					
-					app_ctrl_setAimPos(eTrk_ref_left, 1);
-					break;
-				case Move_Track_Hor_Right:
-
-					app_ctrl_setAimPos(eTrk_ref_right, 1);
-					break;
-				default:
-			
-					break;
-			}
-			switch(data.payload.Track_Trim.move_track_ver)
-			{
-				case Move_Track_Ver_Up:
-
-					app_ctrl_setAimPos(eTrk_ref_up, 1);
-					break;
-				case Move_Track_Ver_Down:
-
-					app_ctrl_setAimPos(eTrk_ref_down, 1);
-					break;
-				default:
-			
-					break;
-			}
-			
+			if(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Left)
+				app_ctrl_setAimPos(eTrk_ref_left, 1);
+			else if(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Right)
+				app_ctrl_setAimPos(eTrk_ref_right, 1);
+			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Right))
+				app_ctrl_setAimPos(eTrk_ref_upright, 2);
+			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Left))
+				app_ctrl_setAimPos(eTrk_ref_upleft, 2);
+			else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up)
+				app_ctrl_setAimPos(eTrk_ref_up, 1);
+			else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down)
+				app_ctrl_setAimPos(eTrk_ref_down, 1);
+			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Right))
+				app_ctrl_setAimPos(eTrk_ref_downright, 2);
+			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Left))
+				app_ctrl_setAimPos(eTrk_ref_downleft, 2);
+						
 			break;
 		case Current_Mode_Track_Search:
 			b_secondTrk = true;
@@ -198,34 +189,23 @@ void recvmsg_040(IPC_msg data)
 
 			if(psendOsd->osd_core.osd_AxisMode)
 			{
-				switch(data.payload.Track_Trim.move_cross_hor)
-				{
-					case Move_CrossCurve_Hor_Left:
-						
-						app_ctrl_setAxisPos(eAxis_ref_left, 1);
-						break;
-					case Move_CrossCurve_Hor_Right:
-
-						app_ctrl_setAxisPos(eAxis_ref_right, 1);
-						break;
-					default:
-				
-						break;
-				}
-				switch(data.payload.Track_Trim.move_cross_ver)
-				{
-					case Move_CrossCurve_Ver_Up:
-
-						app_ctrl_setAxisPos(eAxis_ref_up, 1);
-						break;
-					case Move_CrossCurve_Ver_Down:
-
-						app_ctrl_setAxisPos(eAxis_ref_down, 1);
-						break;
-					default:
-				
-						break;
-				}
+				if(data.payload.Track_Trim.move_cross_hor==Move_CrossCurve_Hor_Left)
+					app_ctrl_setAxisPos(eAxis_ref_left, 1);
+				else if(data.payload.Track_Trim.move_cross_hor==Move_CrossCurve_Hor_Right)
+					app_ctrl_setAxisPos(eAxis_ref_right, 1);
+				else if((data.payload.Track_Trim.move_cross_ver==Move_CrossCurve_Ver_Up)&&(data.payload.Track_Trim.move_cross_hor==Move_CrossCurve_Hor_Right))
+					app_ctrl_setAxisPos(eAxis_ref_upright, 2);
+				else if((data.payload.Track_Trim.move_cross_ver==Move_CrossCurve_Ver_Up)&&(data.payload.Track_Trim.move_cross_hor==Move_CrossCurve_Hor_Left))
+					app_ctrl_setAxisPos(eAxis_ref_upleft, 2);
+				else if(data.payload.Track_Trim.move_cross_ver==Move_CrossCurve_Ver_Up)
+					app_ctrl_setAxisPos(eAxis_ref_up, 1);
+				else if(data.payload.Track_Trim.move_cross_ver==Move_CrossCurve_Ver_Down)
+					app_ctrl_setAxisPos(eAxis_ref_down, 1);
+				else if((data.payload.Track_Trim.move_cross_ver==Move_CrossCurve_Ver_Down)&&(data.payload.Track_Trim.move_cross_hor==Move_CrossCurve_Hor_Right))
+					app_ctrl_setAxisPos(eAxis_ref_downright, 2);
+				else if((data.payload.Track_Trim.move_cross_ver==Move_CrossCurve_Ver_Down)&&(data.payload.Track_Trim.move_cross_hor==Move_CrossCurve_Hor_Left))
+					app_ctrl_setAxisPos(eAxis_ref_downleft, 2);
+								
 			}
 
 			if((data.payload.Work_Pattern.Shart_Exit == 1)&&(b_saveAxis))
