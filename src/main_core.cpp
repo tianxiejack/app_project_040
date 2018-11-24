@@ -43,24 +43,28 @@ void Track_armRefine(int dir, int step = 1)
 		{
 			cv::Point raf(0, -1*step);
 			core->setTrackPosRef(raf);
+			printf("move UP");
 		}
 		break;
 	case KEYDIR_DOWN:
 		{
 			cv::Point raf(0, step);
 			core->setTrackPosRef(raf);
+			printf("move DOWN");
 		}
 		break;
 	case KEYDIR_LEFT:
 		{
 			cv::Point raf(-1*step, 0);
 			core->setTrackPosRef(raf);
+			printf("move LEFT");
 		}
 		break;
 	case KEYDIR_RIGHT:
 		{
 			cv::Point raf(step, 0);
 			core->setTrackPosRef(raf);
+			printf("move RIGHT");
 		}
 		break;
 	default:
