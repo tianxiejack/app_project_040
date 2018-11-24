@@ -77,24 +77,28 @@ void Axis_move(int dir, int step = 1)
 		{
 			cv::Point pos(curPos.x+0.5, curPos.y-0.5-1*step);
 			core->setAxisPos(pos);
+			printf("move UP");
 		}
 		break;
 	case KEYDIR_DOWN:
 		{
 			cv::Point pos(curPos.x+0.5, curPos.y+0.5+1*step);
 			core->setAxisPos(pos);
+			printf("move DOWN");
 		}
 		break;
 	case KEYDIR_LEFT:
 		{
 			cv::Point pos(curPos.x-0.5-1*step, curPos.y+0.5);
 			core->setAxisPos(pos);
+			printf("move LEFT");
 		}
 		break;
 	case KEYDIR_RIGHT:
 		{
 			cv::Point pos(curPos.x+0.5+1*step, curPos.y+0.5);
 			core->setAxisPos(pos);
+			printf("move RIGHT");
 		}
 		break;
 	default:
