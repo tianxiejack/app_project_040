@@ -98,63 +98,55 @@ void app_ctrl_setAxisPos(int dir, int step)
 {
 	cv::Point2f curPos = uart_core->m_stats.chn[uart_core->m_stats.mainChId].axis;
 
-	OSA_printf("jet +++ dir=%d,curPosXY=(%0.2f,%0.2f)\n",dir,curPos.x,curPos.y);
+	//OSA_printf("jet +++ dir=%d,curPosXY=(%0.2f,%0.2f)\n",dir,curPos.x,curPos.y);
 	switch(dir)
 	{
 		case eAxis_ref_up:
 			{
 				cv::Point pos(curPos.x, curPos.y-1*step);
 				uart_core->setAxisPos(pos);
-				OSA_printf("UP\n");
 			}
 			break;
 		case eAxis_ref_down:
 			{
 				cv::Point pos(curPos.x, curPos.y+1*step);
 				uart_core->setAxisPos(pos);
-				OSA_printf("DOWN\n");
 			}
 			break;
 		case eAxis_ref_left:
 			{
 				cv::Point pos(curPos.x-1*step, curPos.y);
 				uart_core->setAxisPos(pos);
-				OSA_printf("LEFT\n");
 			}
 			break;
 		case eAxis_ref_right:
 			{
 				cv::Point pos(curPos.x+1*step, curPos.y);
 				uart_core->setAxisPos(pos);
-				OSA_printf("RIGHT\n");
 			}
 			break;
 		case eAxis_ref_upleft:
 			{
 				cv::Point pos(curPos.x-1*step, curPos.y-1*step);
 				uart_core->setAxisPos(pos);
-				OSA_printf("UPLEFT\n");
 			}
 			break;
 		case eAxis_ref_upright:
 			{
 				cv::Point pos(curPos.x+1*step, curPos.y-1*step);
 				uart_core->setAxisPos(pos);
-				OSA_printf("UPRIGHT\n");
 			}
 			break;
 		case eAxis_ref_downleft:
 			{
 				cv::Point pos(curPos.x-1*step, curPos.y+1*step);
-				uart_core->setAxisPos(pos);
-				OSA_printf("DOWNLEFT\n");
+				uart_core->setAxisPos(pos);	
 			}
 			break;
 		case eAxis_ref_downright:
 			{
 				cv::Point pos(curPos.x+1*step, curPos.y+1*step);
-				uart_core->setAxisPos(pos);
-				OSA_printf("DOWNRIGHT\n");
+				uart_core->setAxisPos(pos);			
 			}
 			break;
 		default:
@@ -164,54 +156,64 @@ void app_ctrl_setAxisPos(int dir, int step)
 
 void app_ctrl_setAimPos(int dir, int step)
 {
+	OSA_printf("enter the AimPos\n");
 	switch(dir)
 	{
 		case eTrk_ref_up:
 			{
 				cv::Point raf(0, -1*step);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("UP\n");
+			
 			}
 			break;
 		case eTrk_ref_down:
 			{
 				cv::Point raf(0, step);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("DOWN\n");
 			}
 			break;
 		case eTrk_ref_left:
 			{
 				cv::Point raf(-1*step, 0);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("LEFT\n");
 			}
 			break;
 		case eTrk_ref_right:
 			{
 				cv::Point raf(step, 0);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("UPRIGHT\n");
 			}
 			break;
 		case eTrk_ref_upleft:
 			{
 				cv::Point raf(-1*step, -1*step);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("UPLEFT\n");
 			}
 			break;
 		case eTrk_ref_upright:
 			{
 				cv::Point raf(step, -1*step);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("UPRIGHT\n");
 			}
 			break;
 		case eTrk_ref_downleft:
 			{
 				cv::Point raf(-1*step, step);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("DOWNLEFT\n");
 			}
 			break;
 		case eTrk_ref_downright:
 			{
 				cv::Point raf(step, step);
 				uart_core->setTrackPosRef(raf);
+				OSA_printf("DOWNRIGHT\n");
 			}
 			break;		
 		default:
