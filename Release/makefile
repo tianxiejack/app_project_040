@@ -57,19 +57,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: dss_xgs040
+all: dss_040_tx2
 
 # Tool invocations
-dss_xgs040: $(OBJS) $(USER_OBJS)
+dss_040_tx2: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: NVCC Linker'
-	/usr/local/cuda-8.0/bin/nvcc --cudart static -L../lib -Xlinker -rpath-link="/usr/lib/aarch64-linux-gnu/tegra" -L/usr/lib -L/usr/lib/aarch64-linux-gnu --relocatable-device-code=false -gencode arch=compute_50,code=compute_50 -gencode arch=compute_50,code=sm_50 -m64 -ccbin aarch64-linux-gnu-g++ -link -o  "dss_xgs040" $(OBJS) $(USER_OBJS) $(LIBS)
+	/usr/local/cuda-8.0/bin/nvcc --cudart static -L/usr/lib -L/usr/lib/aarch64-linux-gnu -L../lib --relocatable-device-code=false -gencode arch=compute_50,code=compute_50 -gencode arch=compute_50,code=sm_50 -m64 -ccbin aarch64-linux-gnu-g++ -link -o  "dss_040_tx2" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CU_DEPS)$(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) dss_xgs040
+	-$(RM) $(CU_DEPS)$(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) dss_040_tx2
 	-@echo ' '
 
 .PHONY: all clean dependents

@@ -130,23 +130,34 @@ void recvmsg_040(IPC_msg data)
 			pMsg->TrkWinSize = (int)data.payload.MulTarget_Num.bomen_size;
 			app_ctrl_setTrkBomen(pMsg);
 			//printf("jet +++ xref=%d,yref=%d\n", data.payload.Track_Trim.move_track_hor, data.payload.Track_Trim.move_track_ver);
-			if(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Left)
+			if(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Left){
+				if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up){
+					app_ctrl_setAimPos(eTrk_ref_upleft, 2);
+				}
+				else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down){
+					app_ctrl_setAimPos(eTrk_ref_downleft, 2);
+				}
+				else{
 				app_ctrl_setAimPos(eTrk_ref_left, 1);
-			else if(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Right)
+				}
+			}
+			else if(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Right){
+				if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up){
+					app_ctrl_setAimPos(eTrk_ref_upright, 2);
+				}
+				else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down){
+					app_ctrl_setAimPos(eTrk_ref_downright, 2);
+				}
+				else{
 				app_ctrl_setAimPos(eTrk_ref_right, 1);
-			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Right))
-				app_ctrl_setAimPos(eTrk_ref_upright, 2);
-			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Left))
-				app_ctrl_setAimPos(eTrk_ref_upleft, 2);
-			else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up)
+				}
+			}
+			else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Up){
 				app_ctrl_setAimPos(eTrk_ref_up, 1);
-			else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down)
+			}
+			else if(data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down){
 				app_ctrl_setAimPos(eTrk_ref_down, 1);
-			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Right))
-				app_ctrl_setAimPos(eTrk_ref_downright, 2);
-			else if((data.payload.Track_Trim.move_track_ver==Move_Track_Ver_Down)&&(data.payload.Track_Trim.move_track_hor==Move_Track_Hor_Left))
-				app_ctrl_setAimPos(eTrk_ref_downleft, 2);
-						
+			}
 			break;
 		case Current_Mode_Track_Search:
 			b_secondTrk = true;

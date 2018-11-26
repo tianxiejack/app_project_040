@@ -1,5 +1,0 @@
-%YAML:1.0
-cfg_mode: 1             #1:black fusion,2:white fusion,3:black and white fusion
-cfg_threshold: 0.05     #value 0.0-1.0
-
-
