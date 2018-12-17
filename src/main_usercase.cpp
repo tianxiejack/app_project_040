@@ -20,6 +20,12 @@
 #include "MultiChVideo.hpp"
 #include "cuda_convert.cuh"
 
+// PROJ_XGS040
+#include "cr_uart/uart_api.hpp"
+#include "cr_timer/setTimer.h"
+#include "cr_osd/osd_graph.h"
+#include "cr_gpio/gpio040.h"
+
 using namespace cv;
 
 #define WHITECOLOR 		0x008080FF
@@ -102,11 +108,6 @@ public:
 static FPS gcnt[SYS_CHN_CNT];
 static OSA_SemHndl semNotify;
 static FPS prcFps;
-static CORE1001_STATS stats;
-static wchar_t strSysTimer[64] = L"XXX-XX-XX XX:XX:XX";
-static wchar_t strFov[2][128] = {L"",L""};
-static wchar_t strFPS[2][128] = {L"",L""};
-static wchar_t strProFPS[128] = L"";
 
 static void processFrame_core(int cap_chid,unsigned char *src, struct v4l2_buffer capInfo, int format)
 {
@@ -116,9 +117,6 @@ static void processFrame_core(int cap_chid,unsigned char *src, struct v4l2_buffe
 	}
 
 	gcnt[cap_chid].signal();
-	swprintf(strFPS[0], 64, L"ch0 FPS: %.2f (%.2f %.2f)", gcnt[0].cmean,gcnt[0].cmax,gcnt[0].cmin);
-	swprintf(strFPS[1], 64, L"ch1 FPS: %.2f (%.2f %.2f)", gcnt[1].cmean,gcnt[1].cmax,gcnt[1].cmin);
-
 
 	if(core != NULL){
 		/*if(cap_chid == 1){
@@ -253,7 +251,7 @@ static void keyboard_event(unsigned char key, int x, int y)
 			" [s] Enable/Disable Blob detect         \n"
 			" [v] Move sub window postion            \n"
 			" [w] EZoomx sub window video            \n"
-			" [1].[5] Enable Track By MMTD           \n"
+			" [1].[8] Enable Track By MMTD           \n"
 			" [esc][q]Quit                           \n"
 			"--> ",
 
@@ -319,7 +317,7 @@ static void keyboard_event(unsigned char key, int x, int y)
 	//	break;
 	case 'b':
 		mmtdEnable ^=1;
-		core->enableMMTD(mmtdEnable, 5);
+		core->enableMMTD(mmtdEnable, 8);
 		break;
 	case 'o':
 		motionDetect ^=1;
@@ -357,6 +355,9 @@ static void keyboard_event(unsigned char key, int x, int y)
 	case '3':
 	case '4':
 	case '5':
+	case '6':
+	case '7':
+	case '8':
 		winSize.width *= SYS_CHN_WIDTH(chrChId)/1920;
 		winSize.height *= SYS_CHN_HEIGHT(chrChId)/1080;
 		if(core->enableTrackByMMTD(key-'1', &winSize, false)==OSA_SOK){
@@ -526,111 +527,6 @@ static void *thrdhndl_keyevent(void *context)
 	return NULL;
 }
 
-static void fontPatterns(void)
-{
-	cr_osd::put(strSysTimer, cv::Point(50,45), cvScalar(255,255,255,255));
-	cr_osd::put(strFov[0], cv::Point(50,45*2), cvScalar(255,255,255,255));
-	cr_osd::put(strFov[1], cv::Point(50,45*3), cvScalar(255,255,255,255));
-	cr_osd::put(strFPS[0], cv::Point(50,45*4), cvScalar(255,255,255,255));
-	cr_osd::put(strFPS[1], cv::Point(50,45*5), cvScalar(255,255,255,255));
-	cr_osd::put(strProFPS, cv::Point(50,45*6), cvScalar(255,255,255,255));
-	cr_osd::put(&stats.lossCoastFrames, L"coast = %d", cv::Point(50,45*7), cvScalar(255,255,255,255));
-	cr_osd::put(&chrChId, 2, cv::Point(50, 45*8), cvScalar(255, 0, 0, 255), L"嵌润信息科技 TV", L"自动视频跟踪 FLR");
-	cr_osd::put(&stats.iTrackorStat, 4, cv::Point(50, 45*9), cvScalar(0, 0, 255, 255), L"捕获", L"锁定", L"惯性", L"丢失");
-
-	cr_osd::Line line1;
-	line1.draw(cv::Point(50, 45*9), cv::Point(265, 45*9), cvScalar(255, 0,0,255), 2);
-
-	cr_osd::Polygon polygon1(3, GL_LINE_LOOP);
-	cr_osd::Polygon polygon2(3, GL_POLYGON);
-	std::vector<cv::Point> vpts;
-	vpts.clear();
-	vpts.push_back(cv::Point(300, 440));
-	vpts.push_back(cv::Point(320, 440));
-	vpts.push_back(cv::Point(310, 470));
-	polygon1.draw(vpts, cvScalar(0, 0, 255,255), 2);
-	vpts.clear();
-	vpts.push_back(cv::Point(310, 410));
-	vpts.push_back(cv::Point(300, 440));
-	vpts.push_back(cv::Point(320, 440));
-	polygon2.draw(vpts, cvScalar(255, 0, 0,255), 2);
-}
-
-static void *thrdhndl_notify( void * p )
-{
-#if 1
-	using namespace cr_osd;
-	int64 tm = getTickCount();
-	//static std::vector<float> vArray;
-	static std::vector<float> vArray;
-	vArray.resize(300);
-	for(int i=0; i<300; i++)
-		vArray[i] = sin(i*10*0.017453292519943296);
-	IPattern* pat = IPattern::Create(&vArray, cv::Rect(0, 0, 600, 200), cv::Scalar(0, 255, 255, 255));
-
-		static cv::Mat wave(60, 60, CV_32FC1);
-		static cv::Rect rc(1500, 20, 400, 400);
-		static IPattern* pattern = NULL;
-		//static int cnt = 0;
-		//cnt ^=1;
-		//wave.setTo(Scalar::all((double)cnt));
-		if(pattern == NULL){
-
-			cv::RNG rng = cv::RNG(OSA_getCurTimeInMsec());
-			for(int i=0; i<wave.rows; i++){
-				for(int j=0; j<wave.cols; j++)
-				{
-//					wave.at<float>(i, j) = sin(i*2*CV_PI/180.0);
-					wave.at<float>(i, j)= std::exp(-1.0*((i-wave.rows/2)*(i-wave.rows/2)+(j-wave.cols/2)*(j-wave.cols/2))/(2.0*10*10));///(CV_PI*2.0*3.0*3.0);
-
-				}
-			}
-
-			pattern = IPattern::Create(wave, rc, cv::Scalar(0, 255, 0, 128));
-		}
-	while( *(bool*)p )
-	{
-		OSA_semWait(&semNotify, OSA_TIMEOUT_FOREVER);
-		memcpy(&stats, &core->m_stats, sizeof(stats));
-
-		int64 tm2 = getTickCount();
-		float interval = float((tm2-tm)*0.000000001f);
-		tm = tm2;
-		prcFps.signal();
-		vArray.erase(vArray.begin());
-		vArray.push_back(interval*10.0);
-		swprintf(strProFPS, 128, L"PRC FPS: %.2f (%.2f %.2f)", prcFps.cmean,prcFps.cmax,prcFps.cmin);
-		swprintf(strFov[0], 64, L"ch0 FOV: %d", stats.chn[0].fovId);
-		swprintf(strFov[1], 64, L"ch1 FOV: %d", stats.chn[1].fovId);
-	}
-	cr_osd::IPattern::Destroy(pat);
-	cr_osd::IPattern::Destroy(pattern);
-#endif
-}
-static void *thrdhndl_timer( void * p )
-{
-	//cv::Point posTmp;
-	struct timeval timeout;
-	while( *(bool*)p )
-	{
-		timeout.tv_sec = 0;
-		timeout.tv_usec = 100*1000;
-		select( 0, NULL, NULL, NULL, &timeout );
-		struct tm curTmt;
-		time_t curTm;
-		time(&curTm);
-		memcpy(&curTmt,localtime(&curTm),sizeof(curTmt));
-		swprintf(strSysTimer, 64, L"%04d-%02d-%02d %02d:%02d:%02d",
-				curTmt.tm_year+1900, curTmt.tm_mon+1, curTmt.tm_mday,
-				curTmt.tm_hour, curTmt.tm_min, curTmt.tm_sec);
-
-		//swprintf(strProFPS, 128, L"PRC FPS: %.2f (%.2f %.2f)", prcFps.cmean,prcFps.cmax,prcFps.cmin);
-		//posTmp = cv::Point(stats.chn[0].axis.x, stats.chn[0].axis.y);
-		//posTmp = cv::Point(stats.trackPos.x, stats.trackPos.y);
-		//cv::circle(core->m_dc[0], posTmp, 16, cvScalar(255), 2);
-	}
-	return NULL;
-}
 
 static int encParamTab_T18[][8] = {
 	//bitrate; minQP; maxQP;minQI;maxQI;minQB;maxQB;
@@ -640,25 +536,84 @@ static int encParamTab_T18[][8] = {
 };
 static int encParamTab[][8] = {
 	//bitrate; minQP; maxQP;minQI;maxQI;minQB;maxQB;
-	{1400000,  -1,    -1,   -1,   -1,   -1,   -1, },//2M
-	{2800000,  -1,    -1,   -1,   -1,   -1,   -1, },//4M
-	{5600000,  -1,    -1,   -1,   -1,   -1,   -1, } //8M
+	{1600000,  -1,    -1,   -1,   -1,   -1,   -1, },//2M
+	{3500000,  -1,    -1,   -1,   -1,   -1,   -1, },//4M
+	{7000000,  -1,    -1,   -1,   -1,   -1,   -1, } //8M
+};
+// multi enc TV:FR=6:4
+static int encParamTab_multiTV[][8] = {
+	//bitrate; minQP; maxQP;minQI;maxQI;minQB;maxQB;
+	{960000,  -1,    -1,   -1,   -1,   -1,   -1, },//2M
+	{2100000,  -1,    -1,   -1,   -1,   -1,   -1, },//4M
+	{4200000,  -1,    -1,   -1,   -1,   -1,   -1, } //8M
+};
+static int encParamTab_multiFR[][8] = {
+	//bitrate; minQP; maxQP;minQI;maxQI;minQB;maxQB;
+	{640000,  -1,    -1,   -1,   -1,   -1,   -1, },//2M
+	{1400000,  -1,    -1,   -1,   -1,   -1,   -1, },//4M
+	{2800000,  -1,    -1,   -1,   -1,   -1,   -1, } //8M
 };
 
 static int callback_process(void *handle, int chId, Mat frame, struct v4l2_buffer capInfo, int format)
 {
-	if(chId >= SYS_CHN_CNT)
+	if(chId>=SYS_CHN_CNT)
 		return 0;
 
 	processFrame_core(chId, frame.data, capInfo, format);
+
+	if(chId == 0)
+		osd_graph_update_sem_post();
+
 	return 0;
 }
 
 static CORE1001_INIT_PARAM initParam;
 static bool bLoop = true;
-static char strIpAddr[32] = "192.168.1.88";
-int main_core(int argc, char **argv)
+static char strIpAddr[32] = "192.168.1.33";
+
+// PROJ_XGS040
+static bool g_selfTest=false;
+void app_thrCreat()
 {
+	CR_createTimer(10);
+
+	Hard_Init();
+
+	uart_thrCreat();
+
+	osd_graph_init();
+}
+
+int main_usercase(int argc, char **argv)
+{
+	bool bRender = true;
+
+	// PROJ_XGS040
+	if(argc>=2)
+	{
+		if(strcmp(argv[1], "dis") == 0)
+		{
+			bRender = true;
+			g_selfTest = true;
+		}
+		else
+		{
+			bRender = false;
+			g_selfTest = false;
+		}
+
+		//strcpy(strIpAddr, argv[2]);
+
+	}
+	else
+	{
+		bRender = false;
+		g_selfTest = false;
+	}
+
+	if(!g_selfTest)
+		app_thrCreat();
+
 	core = (ICore_1001 *)ICore::Qury(COREID_1001);
 	memset(&initParam, 0, sizeof(initParam));
 	initParam.nChannels = SYS_CHN_CNT;
@@ -672,21 +627,17 @@ int main_core(int argc, char **argv)
 	initParam.encoderParamTab[0] = encParamTab[0];
 	initParam.encoderParamTab[1] = encParamTab[1];
 	initParam.encoderParamTab[2] = encParamTab[2];
-	initParam.bRender = true;
-	initParam.bEncoder = false;
+	initParam.encoderParamTabMulti[0][0] = encParamTab_multiTV[0];
+	initParam.encoderParamTabMulti[0][1] = encParamTab_multiTV[1];
+	initParam.encoderParamTabMulti[0][2] = encParamTab_multiTV[2];
+	initParam.encoderParamTabMulti[1][0] = encParamTab_multiFR[0];
+	initParam.encoderParamTabMulti[1][1] = encParamTab_multiFR[1];
+	initParam.encoderParamTabMulti[1][2] = encParamTab_multiFR[2];
+	initParam.bRender = bRender;
+	initParam.bEncoder = true;
 	initParam.bHideOSD = false;
-	OSA_semCreate(&semNotify, 1, 0);
-	initParam.notify = &semNotify;
-	if(argc>=2){
-		initParam.bEncoder = true;
-		strcpy(strIpAddr, argv[1]);
-	}
-	initParam.encStreamIpaddr = strIpAddr;
+	//initParam.encStreamIpaddr = strIpAddr;	// cancel netrtp
 	core->init(&initParam, sizeof(initParam));
-	start_thread(thrdhndl_timer, &bLoop);
-	start_thread(thrdhndl_notify, &bLoop);
-
-	fontPatterns();
 
 	MultiChVideo MultiCh;
 	MultiCh.m_user = NULL;
@@ -705,7 +656,6 @@ int main_core(int argc, char **argv)
 	core->uninit();
 	ICore::Release(core);
 	core = NULL;
-	OSA_semDelete(&semNotify);
 
 	return 0;
 }

@@ -9,12 +9,12 @@
 #define CRCORE_HPP_
 
 /***********************************************
- * core version 1.0.3
+ * core version 1.0.5
  */
 #include "osa.h"
 #include "osa_sem.h"
 
-#define CORE_1001_VERSION_  "1.0.3"
+#define CORE_1001_VERSION_  "1.0.5"
 #define COREID_1001			(0x10010000)
 #define COREID_1001_040		(CORNID_1001 + 1)
 
@@ -42,6 +42,7 @@ typedef struct _core_1001_chn_stats{
 	bool enableEnh;
 	int iEZoomx;
 	bool enableEncoder;
+	uint64_t frameTimestamp;
 }CORE1001_CHN_STATS;
 
 typedef struct _core_1001_stats{
@@ -56,6 +57,8 @@ typedef struct _core_1001_stats{
 	CORE_TGT_INFO tgts[CORE_TGT_NUM_MAX];
 	CORE1001_CHN_STATS chn[CORE_CHN_MAX];
 	CORE_TGT_INFO blob;
+	unsigned int lossCoastFrames;
+	unsigned int lossCoastTelapse;//ms
 }CORE1001_STATS;
 
 typedef struct _core_1001_chnInfo_init{
@@ -72,8 +75,10 @@ typedef struct _core_1001_init{
 	bool bHideOSD;
 	cv::Size renderSize;
 	int renderFPS;
-	int *encoderParamTab[3];
+	float renderSched;
 	char *encStreamIpaddr;
+	int *encoderParamTab[3];
+	int *encoderParamTabMulti[CORE_CHN_MAX][3];
 }CORE1001_INIT_PARAM;
 typedef cv::Rect_<float> Rect2f;
 class ICore_1001 : public ICore
@@ -89,8 +94,8 @@ public:
 	virtual int enableEnh(bool enable) = 0;
 	virtual int enableEnh(int chId, bool enable) = 0;
 	virtual int enableBlob(bool enable) = 0;
-	virtual int bindBlend(int blendchId, cv::Matx44f matric) = 0;
-	virtual int bindBlend(int chId, int blendchId, cv::Matx44f matric) = 0;
+	virtual int bindBlend(int blendchId, const cv::Matx44f& matric) = 0;
+	virtual int bindBlend(int chId, int blendchId, const cv::Matx44f& matric) = 0;
 	virtual int enableOSD(bool enable) = 0;
 	virtual int enableEncoder(int chId, bool enable) = 0;
 	virtual int setAxisPos(cv::Point pos) = 0;
@@ -99,8 +104,10 @@ public:
 	virtual int setTrackCoast(int nFrames) = 0;
 	virtual int setEZoomx(int value) = 0;
 	virtual int setEZoomx(int chId, int value) = 0;
-	virtual int setOSDColor(int yuv, int thickness = 1) = 0;
-	virtual int setOSD(cv::Scalar color, int thickness = 1) = 0;
+	virtual int setWinPos(int winId, const cv::Rect& rc) = 0;//! (0,0):(left,bottom)
+	virtual int setWinMatric(int winId, const cv::Matx44f& matric) = 0;
+	virtual int setOSDColor(int yuv, int thickness = 2) = 0;
+	virtual int setOSD(cv::Scalar color, int thickness = 2) = 0;
 	virtual int setEncTransLevel(int iLevel) = 0;
 
 	CORE1001_STATS m_stats;

@@ -2,37 +2,36 @@
 #ifndef DISPLAYER_HPP_
 #define DISPLAYER_HPP_
 
+//#define __EGL__
 #define DS_RENDER_MAX		(9)
 #define DS_CHAN_MAX         (4)
 
-#include <cuda.h>
-#include "cuda_runtime_api.h"
+#include <opencv2/opencv.hpp>
+#include <osa_buf.h>
 
-#include "osa.h"
-#include "osa_thr.h"
-#include "osa_buf.h"
-#include "osa_sem.h"
-
-#define DS_DC_CNT		(1)
+#ifdef __EGL__
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#else
+#include <glew.h>
+#include <glut.h>
+#include <freeglut_ext.h>
+#endif
 
 using namespace std;
-using namespace cv;
-using namespace cr_osa;
 
 typedef cv::Matx<GLfloat, 4, 4> GLMatx44f;
 
-typedef struct _ds_size{
+typedef struct _ds_chninfo{
 	int w;
 	int h;
 	int c;
-}DS_Size;
+	int fps;
+}DS_ChnInfo;
 
-typedef struct _ds_rect{
-	int x;
-	int y;
-	int w;
-	int h;
-}DS_Rect;
+typedef cv::Rect DS_Rect;
 
 typedef struct _ds_render
 {
@@ -58,9 +57,10 @@ typedef struct _ds_init_param{
 	int winWidth;
 	int winHeight;
 	int disFPS;
+	float disSched;
 	bool bScript;
 	char szScriptFile[256];
-	DS_Size channelsSize[DS_CHAN_MAX];
+	DS_ChnInfo channelInfo[DS_CHAN_MAX];
 	int nChannels;
 	int nQueueSize;
 	int memType;
@@ -70,11 +70,8 @@ typedef struct _ds_init_param{
 	void (*keyboardfunc)(unsigned char key, int x, int y);
 	void (*keySpecialfunc)( int, int, int );
 	void (*visibilityfunc)(int state);
-	void (*timerfunc)(int value);
-	void (*idlefunc)(void);
 	void (*closefunc)(void);
-	void (*renderfunc)(void);
-	int timerfunc_value;//context
+	void (*renderfunc)(int stepIdx, int stepSub, int context);
 }DS_InitPrm;
 
 class CRender
@@ -85,11 +82,9 @@ class CRender
 public:
 	static CRender* createObject();
 	static void destroyObject(CRender* obj);
-	int create();
+	int create(DS_InitPrm *pPrm);
 	int destroy();
-	int init(DS_InitPrm *pPrm);
-	void run();
-	void stop();
+	int setFPS(float fps);
 
 	typedef enum{
 		DS_CFG_ChId = 0,
@@ -101,27 +96,27 @@ public:
 		DS_CFG_ViewTransMat,
 		DS_CFG_BlendTransMat,
 		DS_CFG_BlendPrm,
+		DS_CFG_ViewPos,
 		DS_CFG_Max
 	}DS_CFG;
 
+	enum{
+		RUN_ENTER = 0,
+		RUN_WIN,
+		RUN_SWAP,
+		RUN_LEAVE
+	};
+
 	int dynamic_config(DS_CFG type, int iPrm, void* pPrm);
-	int get_videoSize(int chId, DS_Size &size);
-	GLuint async_display(int chId, int width, int height, int channels);
-	int setFullScreen(bool bFull);
-	void disp_fps();
-	int m_mainWinWidth;
-	int m_mainWinHeight;
-	bool m_bRun;
+	int m_winId;
+	int m_winWidth;
+	int m_winHeight;
 	bool m_bFullScreen;
-	bool m_bOsd;
-	Mat m_imgOsd[DS_DC_CNT];
-	CvScalar m_osdColor;
-	DS_Size m_videoSize[DS_CHAN_MAX];
+	//int m_thickness;
+	DS_ChnInfo m_videoInfo[DS_CHAN_MAX];
 	GLuint buffId_input[DS_CHAN_MAX];
-	GLuint buffId_osd[DS_DC_CNT];
-	OSA_BufHndl m_bufQue[DS_CHAN_MAX];
-	OSA_MutexHndl *m_cumutex;
-	bool m_timerRun;
+	cr_osa::OSA_BufHndl m_bufQue[DS_CHAN_MAX];
+	//OSA_MutexHndl *m_cumutex;
 protected:
 	DS_InitPrm m_initPrm;
 	DS_Render m_renders[DS_RENDER_MAX];
@@ -130,14 +125,15 @@ protected:
 	int m_maskMap[DS_CHAN_MAX];
 	int m_renderCount;
 	int initRender(bool updateMap = true);
-	void uninitRender();
+	GLuint async_display(int chId, int width, int height, int channels);
 
 protected:
 	static void _display(void);
-	static void _timeFunc(int value);
 	static void _reshape(int width, int height);
 	static void _close(void);
-	void gl_resize(void);
+
+	static void _display2(void);
+	void gl_display2();
 
 protected:
 	GLint	m_glProgram[8];
@@ -148,14 +144,10 @@ protected:
 	GLMatx44f m_glmat44fBlend[DS_CHAN_MAX*DS_CHAN_MAX];
 	DS_BlendPrm m_glBlendPrm[DS_CHAN_MAX*DS_CHAN_MAX];
 	GLuint textureId_input[DS_CHAN_MAX];
-	GLuint textureId_osd[DS_DC_CNT];
 
-	int gl_create();
-	void gl_destroy();
-	void gl_init();
+	int gl_init();
 	void gl_uninit();
 	void gl_display();
-	void gl_updateTexOSD();
 	void gl_updateTexVideo();
 	int gl_updateVertex();
 	int gl_loadProgram();
@@ -164,6 +156,7 @@ protected:
 	bool gltLoadShaderFile(const char *szFile, GLuint shader);
 	GLuint gltLoadShaderPairWithAttributes(const char *szVertexProg, const char *szFragmentProg, ...);
 
+	void UpdateOSD(void);
 
 private:
 	OSA_MutexHndl m_mutex;
@@ -172,6 +165,44 @@ private:
 	uint64  m_tmBak[DS_CHAN_MAX];
 	int64   m_tmRender;
 	bool m_waitSync;
+
+	pthread_mutex_t render_lock;    /**< Used for synchronization. */
+	pthread_cond_t render_cond;     /**< Used for synchronization. */
+    uint64_t render_time_sec;       /**< Seconds component of the time for which a
+                                         frame should be displayed. */
+    uint64_t render_time_nsec;      /**< Nanoseconds component of the time for which
+                                         a frame should be displayed. */
+    struct timespec last_render_time;   /**< Rendering time for the last buffer. */
+    int m_nSwapTimeOut;
+
+#ifdef __EGL__
+private:
+    Display * x_display;    /**< Connection to the X server created using
+                                  XOpenDisplay(). */
+    Window x_window;        /**< Holds the window to be used for rendering
+                                  created using XCreateWindow(). */
+
+    EGLDisplay egl_display;     /**< Holds the EGL Display connection. */
+    EGLContext egl_context;     /**< Holds the EGL rendering context. */
+    EGLSurface egl_surface;     /**< Holds the EGL Window render surface. */
+    EGLConfig egl_config;       /**< Holds the EGL frame buffer configuration
+                                     to be usedfor rendering. */
+
+    bool stop_thread;   /**< Boolean variable used to signal rendering thread
+                             to stop. */
+    pthread_t render_thread;        /**< The pthread id of the rendering thread. */
+
+    //uint32_t texture_id;        /**< Holds the GL Texture ID used for rendering. */
+    GC gc;                      /**< Graphic Context */
+    XFontStruct *fontinfo;      /**< Brush's font info */
+    char overlay_str[512];       /**< Overlay's text */
+
+    static void * renderThread(void *arg){
+    	CRender *renderer = (CRender *) arg;
+    	renderer->renderHandle();
+    }
+    int renderHandle(void);
+#endif
 };
 
 #endif /* DISPLAYER_HPP_ */

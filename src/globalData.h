@@ -5,9 +5,6 @@
 
 using namespace std;
 
-
-#define ASSI_TIME 5000 //ms
-
 typedef struct
 {
 	bool osd_enEnh;

@@ -67,7 +67,7 @@ typedef enum
     eAxis_ref_upright		,
     eAxis_ref_downleft	,
     eAxis_ref_downright	,    
-}Axis_move;
+}Axis_ref;
 
 typedef enum
 {
@@ -80,7 +80,7 @@ typedef enum
     eTrk_ref_upright		,
     eTrk_ref_downleft		,
     eTrk_ref_downright	,    
-}TrkWin_move;
+}TrkWin_ref;
 
 typedef enum {
 	eSen_ColTV		= 0x00,

@@ -3,9 +3,6 @@
 #include <osa_rng.h>
 #include <osa_sem.h>
 
-#define CORE_CHN_MAX	(4)
-#define CORE_TGT_NUM_MAX	(12)
-
 typedef struct uart_tsk_obj
 {
     OSA_TskHndl tsk;

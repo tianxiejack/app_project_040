@@ -257,6 +257,8 @@ void recvmsg_040(IPC_msg data)
 			else
 				send_msg.payload.Self_Tr_S.mul_target_AVT = Multi_Target_AVT_NO;
 		}
+		else
+			send_msg.payload.Self_Tr_S.mul_target_AVT = Multi_Target_AVT_NO;
 	}
 	else
 	{
@@ -444,24 +446,10 @@ static Void * uart_dataSend(Void * prm)
 		{
 			if(send_core->m_stats.iTrackorStat==0x01)
 				send_msg.payload.Self_Tr_S.track_state = Track_State_Tracking;
-			
-			if(send_core->m_stats.iTrackorStat == 0x01)
-			{
-				b_trkStat=false;
-			}
 			else if(send_core->m_stats.iTrackorStat == 0x02)
-			{
-				if(!b_trkStat)
-				{
-					b_trkStat=true;
-					itrkTime=OSA_getCurTimeInMsec();
-				}
-				
-				if((OSA_getCurTimeInMsec()-itrkTime)>ASSI_TIME)// assi time
-					send_msg.payload.Self_Tr_S.track_state=Track_State_Lose;
-				else
-					send_msg.payload.Self_Tr_S.track_state=Track_State_Memory;
-			}		
+				send_msg.payload.Self_Tr_S.track_state = Track_State_Memory;
+			else if(send_core->m_stats.iTrackorStat == 0x03)
+				send_msg.payload.Self_Tr_S.track_state = Track_State_Lose;
 
 			unitTrkX = (send_core->m_stats.trackPos.x - send_core->m_stats.chn[send_core->m_stats.mainChId].axis.x);
 			unitTrkY = (send_core->m_stats.chn[send_core->m_stats.mainChId].axis.y - send_core->m_stats.trackPos.y);
@@ -488,6 +476,7 @@ static Void * uart_dataSend(Void * prm)
 			send_msg.payload.Track_Deviation_X = 0x00;
 			send_msg.payload.Track_Deviation_Y = 0x00;
 		}
+		//printf("jet +++ Trk=%d, unitTrkXY=(%f,%f),xy=(%f,%f),axis=(%f,%f),sendXY=(%d,%d)\n",send_msg.payload.Self_Tr_S.track_state,unitTrkX,unitTrkY,send_core->m_stats.trackPos.x,send_core->m_stats.trackPos.y,send_core->m_stats.chn[send_core->m_stats.mainChId].axis.x,send_core->m_stats.chn[send_core->m_stats.mainChId].axis.y,send_msg.payload.Track_Deviation_X,send_msg.payload.Track_Deviation_Y);
 		/*************************************************************/
 		SetReturnPack(&send_msg);
 	}
