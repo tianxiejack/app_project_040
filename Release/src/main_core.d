@@ -1,20 +1,17 @@
 src/main_core.o : ../src/main_core.cpp \
     /usr/include/stdc-predef.h \
-    ../include/glew.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/stddef.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdint.h \
-    /usr/include/stdint.h \
+    /usr/include/opencv2/opencv.hpp \
+    /usr/include/opencv2/opencv_modules.hpp \
+    /usr/include/opencv2/core/core_c.h \
+    /usr/include/opencv2/core/types_c.h \
+    /usr/include/assert.h \
     /usr/include/features.h \
     /usr/include/aarch64-linux-gnu/sys/cdefs.h \
     /usr/include/aarch64-linux-gnu/bits/wordsize.h \
     /usr/include/aarch64-linux-gnu/gnu/stubs.h \
     /usr/include/aarch64-linux-gnu/gnu/stubs-lp64.h \
-    /usr/include/aarch64-linux-gnu/bits/wchar.h \
-    /usr/include/GL/glu.h \
-    /usr/include/GL/gl.h \
-    /usr/include/GL/glut.h \
-    /usr/include/GL/freeglut_std.h \
     /usr/include/stdlib.h \
+    /usr/lib/gcc/aarch64-linux-gnu/5/include/stddef.h \
     /usr/include/aarch64-linux-gnu/bits/waitflags.h \
     /usr/include/aarch64-linux-gnu/bits/waitstatus.h \
     /usr/include/endian.h \
@@ -37,16 +34,12 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
     /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
     /usr/include/aarch64-linux-gnu/bits/stdlib.h \
-    /usr/include/GL/freeglut_ext.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdarg.h \
-    /usr/include/opencv/cv.hpp \
-    /usr/include/opencv/cv.h \
-    /usr/include/opencv2/core/core_c.h \
-    /usr/include/opencv2/core/types_c.h \
-    /usr/include/assert.h \
     /usr/include/string.h \
     /usr/include/aarch64-linux-gnu/bits/string3.h \
     /usr/lib/gcc/aarch64-linux-gnu/5/include/float.h \
+    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdint.h \
+    /usr/include/stdint.h \
+    /usr/include/aarch64-linux-gnu/bits/wchar.h \
     /usr/include/math.h \
     /usr/include/aarch64-linux-gnu/bits/math-vector.h \
     /usr/include/aarch64-linux-gnu/bits/libm-simd-decl-stubs.h \
@@ -116,6 +109,7 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/include/c++/5/cwchar \
     /usr/include/wchar.h \
     /usr/include/stdio.h \
+    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdarg.h \
     /usr/include/aarch64-linux-gnu/bits/wchar2.h \
     /usr/include/c++/5/bits/char_traits.h \
     /usr/include/c++/5/bits/localefwd.h \
@@ -173,14 +167,55 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/include/opencv2/core/operations.hpp \
     /usr/include/c++/5/limits \
     /usr/include/opencv2/core/mat.hpp \
-    /usr/include/opencv2/imgproc/imgproc_c.h \
-    /usr/include/opencv2/imgproc/types_c.h \
-    /usr/include/opencv2/imgproc/imgproc.hpp \
-    /usr/include/opencv2/video/tracking.hpp \
-    /usr/include/opencv2/features2d/features2d.hpp \
     /usr/include/opencv2/flann/miniflann.hpp \
     /usr/include/opencv2/flann/defines.h \
     /usr/include/opencv2/flann/config.h \
+    /usr/include/opencv2/imgproc/imgproc_c.h \
+    /usr/include/opencv2/imgproc/types_c.h \
+    /usr/include/opencv2/imgproc/imgproc.hpp \
+    /usr/include/opencv2/photo/photo.hpp \
+    /usr/include/opencv2/photo/photo_c.h \
+    /usr/include/opencv2/video/video.hpp \
+    /usr/include/opencv2/video/tracking.hpp \
+    /usr/include/opencv2/video/background_segm.hpp \
+    /usr/include/c++/5/list \
+    /usr/include/c++/5/bits/stl_list.h \
+    /usr/include/c++/5/bits/list.tcc \
+    /usr/include/opencv2/features2d/features2d.hpp \
+    /usr/include/opencv2/objdetect/objdetect.hpp \
+    /usr/include/c++/5/deque \
+    /usr/include/c++/5/bits/stl_deque.h \
+    /usr/include/c++/5/bits/deque.tcc \
+    /usr/include/opencv2/calib3d/calib3d.hpp \
+    /usr/include/opencv2/core/affine.hpp \
+    /usr/include/opencv2/ml/ml.hpp \
+    /usr/include/c++/5/iostream \
+    /usr/include/opencv2/highgui/highgui_c.h \
+    /usr/include/opencv2/highgui/highgui.hpp \
+    /usr/include/opencv2/contrib/contrib.hpp \
+    /usr/include/opencv2/contrib/retina.hpp \
+    /usr/include/c++/5/valarray \
+    /usr/include/c++/5/bits/valarray_array.h \
+    /usr/include/c++/5/bits/valarray_array.tcc \
+    /usr/include/c++/5/bits/valarray_before.h \
+    /usr/include/c++/5/bits/slice_array.h \
+    /usr/include/c++/5/bits/valarray_after.h \
+    /usr/include/c++/5/bits/gslice.h \
+    /usr/include/c++/5/bits/gslice_array.h \
+    /usr/include/c++/5/bits/mask_array.h \
+    /usr/include/c++/5/bits/indirect_array.h \
+    /usr/include/opencv2/contrib/openfabmap.hpp \
+    /usr/include/c++/5/set \
+    /usr/include/c++/5/bits/stl_set.h \
+    /usr/include/c++/5/bits/stl_multiset.h \
+    ../include/glew.h \
+    /usr/include/GL/glu.h \
+    /usr/include/GL/gl.h \
+    /usr/include/GL/glut.h \
+    /usr/include/GL/freeglut_std.h \
+    /usr/include/GL/freeglut_ext.h \
+    /usr/include/opencv/cv.hpp \
+    /usr/include/opencv/cv.h \
     /usr/include/opencv2/flann/flann.hpp \
     /usr/include/opencv2/flann/flann_base.hpp \
     /usr/include/c++/5/cassert \
@@ -195,14 +230,10 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/include/opencv2/flann/params.h \
     /usr/include/opencv2/flann/any.h \
     /usr/include/c++/5/typeinfo \
-    /usr/include/c++/5/iostream \
     /usr/include/opencv2/flann/saving.h \
     /usr/include/c++/5/cstring \
     /usr/include/opencv2/flann/nn_index.h \
     /usr/include/opencv2/flann/result_set.h \
-    /usr/include/c++/5/set \
-    /usr/include/c++/5/bits/stl_set.h \
-    /usr/include/c++/5/bits/stl_multiset.h \
     /usr/include/opencv2/flann/all_indices.h \
     /usr/include/opencv2/flann/kdtree_index.h \
     /usr/include/opencv2/flann/dynamic_bitset.h \
@@ -225,12 +256,6 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/include/opencv2/flann/index_testing.h \
     /usr/include/opencv2/flann/timer.h \
     /usr/include/opencv2/flann/sampling.h \
-    /usr/include/opencv2/calib3d/calib3d.hpp \
-    /usr/include/opencv2/core/affine.hpp \
-    /usr/include/opencv2/objdetect/objdetect.hpp \
-    /usr/include/c++/5/deque \
-    /usr/include/c++/5/bits/stl_deque.h \
-    /usr/include/c++/5/bits/deque.tcc \
     /usr/include/opencv2/legacy/compat.hpp \
     /usr/include/opencv2/core/internal.hpp \
     /usr/include/linux/videodev2.h \
@@ -256,8 +281,7 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/include/aarch64-linux-gnu/bits/confname.h \
     /usr/include/getopt.h \
     /usr/include/aarch64-linux-gnu/bits/unistd.h \
-    ../src/capture/thread.h \
-    ../include/crCore.hpp \
+    ../include/osa/osa_sem.h \
     ../include/osa/osa.h \
     /usr/include/signal.h \
     /usr/include/aarch64-linux-gnu/bits/signum.h \
@@ -271,47 +295,24 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/include/aarch64-linux-gnu/sys/user.h \
     /usr/include/aarch64-linux-gnu/bits/sigthread.h \
     ../include/osa/osa_debug.h \
-    ../include/osa/osa_sem.h \
-    ../src/capture/ChosenCaptureGroup.h \
-    ../src/capture/CaptureGroup.h \
-    ../include/StlGlDefines.h \
-    ../src/capture/Camera.h \
-    /usr/include/opencv2/opencv.hpp \
-    /usr/include/opencv2/opencv_modules.hpp \
-    /usr/include/opencv2/photo/photo.hpp \
-    /usr/include/opencv2/photo/photo_c.h \
-    /usr/include/opencv2/video/video.hpp \
-    /usr/include/opencv2/video/background_segm.hpp \
-    /usr/include/c++/5/list \
-    /usr/include/c++/5/bits/stl_list.h \
-    /usr/include/c++/5/bits/list.tcc \
-    /usr/include/opencv2/ml/ml.hpp \
-    /usr/include/opencv2/highgui/highgui_c.h \
-    /usr/include/opencv2/highgui/highgui.hpp \
-    /usr/include/opencv2/contrib/contrib.hpp \
-    /usr/include/opencv2/contrib/retina.hpp \
-    /usr/include/c++/5/valarray \
-    /usr/include/c++/5/bits/valarray_array.h \
-    /usr/include/c++/5/bits/valarray_array.tcc \
-    /usr/include/c++/5/bits/valarray_before.h \
-    /usr/include/c++/5/bits/slice_array.h \
-    /usr/include/c++/5/bits/valarray_after.h \
-    /usr/include/c++/5/bits/gslice.h \
-    /usr/include/c++/5/bits/gslice_array.h \
-    /usr/include/c++/5/bits/mask_array.h \
-    /usr/include/c++/5/bits/indirect_array.h \
-    /usr/include/opencv2/contrib/openfabmap.hpp \
-    /usr/include/c++/5/memory \
-    /usr/include/c++/5/bits/stl_raw_storage_iter.h \
-    /usr/include/c++/5/backward/auto_ptr.h \
-    ../src/capture/HDV4lcap.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_defines.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda.h \
+    ../src/main.h \
+    ../include/crCore.hpp \
+    ../include/crosd.hpp \
+    ../src/capture/thread.h \
+    ../src/capture/MultiChVideo.hpp \
+    ../include/osa/osa_thr.h \
+    ../include/osa/osa_buf.h \
+    ../include/osa/osa_que.h \
+    ../include/osa/osa_mutex.h \
+    ../include/osa/osa_image_queue.h \
+    ../src/capture/v4l2camera.hpp \
+    ../include/cuda_convert.cuh \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_config.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/builtin_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/device_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_defines.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/surface_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/texture_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_types.h \
@@ -321,7 +322,4 @@ src/main_core.o : ../src/main_core.cpp \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_device_runtime_api.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_functions.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.hpp \
-    ../include/osa/osa_buf.h \
-    ../include/osa/osa_que.h \
-    ../include/osa/osa_mutex.h
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.hpp

@@ -39,17 +39,64 @@ src/main_cap.o : ../src/main_cap.cpp \
     /usr/include/aarch64-linux-gnu/bits/stdlib.h \
     /usr/include/GL/freeglut_ext.h \
     /usr/lib/gcc/aarch64-linux-gnu/5/include/stdarg.h \
-    ../src/capture/ChosenCaptureGroup.h \
-    ../src/capture/CaptureGroup.h \
-    ../include/StlGlDefines.h \
-    ../src/capture/Camera.h \
+    /usr/include/linux/videodev2.h \
+    /usr/include/aarch64-linux-gnu/sys/time.h \
+    /usr/include/linux/ioctl.h \
+    /usr/include/aarch64-linux-gnu/asm/ioctl.h \
+    /usr/include/asm-generic/ioctl.h \
+    /usr/include/linux/types.h \
+    /usr/include/aarch64-linux-gnu/asm/types.h \
+    /usr/include/asm-generic/types.h \
+    /usr/include/asm-generic/int-ll64.h \
+    /usr/include/aarch64-linux-gnu/asm/bitsperlong.h \
+    /usr/include/asm-generic/bitsperlong.h \
+    /usr/include/linux/posix_types.h \
+    /usr/include/linux/stddef.h \
+    /usr/include/aarch64-linux-gnu/asm/posix_types.h \
+    /usr/include/asm-generic/posix_types.h \
+    /usr/include/linux/v4l2-common.h \
+    /usr/include/linux/v4l2-controls.h \
+    ../src/capture/MultiChVideo.hpp \
+    ../include/osa/osa.h \
+    /usr/include/pthread.h \
+    /usr/include/sched.h \
+    /usr/include/aarch64-linux-gnu/bits/sched.h \
+    /usr/include/aarch64-linux-gnu/bits/timex.h \
+    /usr/include/aarch64-linux-gnu/bits/setjmp.h \
+    /usr/include/string.h \
+    /usr/include/aarch64-linux-gnu/bits/string3.h \
+    /usr/include/signal.h \
+    /usr/include/aarch64-linux-gnu/bits/signum.h \
+    /usr/include/aarch64-linux-gnu/bits/siginfo.h \
+    /usr/include/aarch64-linux-gnu/bits/sigaction.h \
+    /usr/include/aarch64-linux-gnu/bits/sigcontext.h \
+    /usr/include/aarch64-linux-gnu/asm/sigcontext.h \
+    /usr/include/aarch64-linux-gnu/bits/sigstack.h \
+    /usr/include/aarch64-linux-gnu/sys/ucontext.h \
+    /usr/include/aarch64-linux-gnu/sys/procfs.h \
+    /usr/include/aarch64-linux-gnu/sys/user.h \
+    /usr/include/aarch64-linux-gnu/bits/sigthread.h \
+    ../include/osa/osa_debug.h \
+    /usr/include/stdio.h \
+    /usr/include/libio.h \
+    /usr/include/_G_config.h \
+    /usr/include/wchar.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio_lim.h \
+    /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio2.h \
+    ../include/osa/osa_thr.h \
+    ../include/osa/osa_buf.h \
+    ../include/osa/osa_que.h \
+    ../include/osa/osa_mutex.h \
+    ../include/osa/osa_sem.h \
+    ../include/osa/osa_image_queue.h \
+    ../src/capture/v4l2camera.hpp \
     /usr/include/opencv2/opencv.hpp \
     /usr/include/opencv2/opencv_modules.hpp \
     /usr/include/opencv2/core/core_c.h \
     /usr/include/opencv2/core/types_c.h \
     /usr/include/assert.h \
-    /usr/include/string.h \
-    /usr/include/aarch64-linux-gnu/bits/string3.h \
     /usr/lib/gcc/aarch64-linux-gnu/5/include/float.h \
     /usr/include/math.h \
     /usr/include/aarch64-linux-gnu/bits/math-vector.h \
@@ -72,7 +119,6 @@ src/main_cap.o : ../src/main_cap.cpp \
     /usr/include/linux/limits.h \
     /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
     /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio_lim.h \
     /usr/include/c++/5/algorithm \
     /usr/include/c++/5/utility \
     /usr/include/aarch64-linux-gnu/c++/5/bits/c++config.h \
@@ -118,8 +164,6 @@ src/main_cap.o : ../src/main_cap.cpp \
     /usr/include/c++/5/bits/stringfwd.h \
     /usr/include/c++/5/bits/postypes.h \
     /usr/include/c++/5/cwchar \
-    /usr/include/wchar.h \
-    /usr/include/stdio.h \
     /usr/include/aarch64-linux-gnu/bits/wchar2.h \
     /usr/include/c++/5/bits/char_traits.h \
     /usr/include/c++/5/bits/localefwd.h \
@@ -133,11 +177,6 @@ src/main_cap.o : ../src/main_cap.cpp \
     /usr/include/c++/5/ext/atomicity.h \
     /usr/include/aarch64-linux-gnu/c++/5/bits/gthr.h \
     /usr/include/aarch64-linux-gnu/c++/5/bits/gthr-default.h \
-    /usr/include/pthread.h \
-    /usr/include/sched.h \
-    /usr/include/aarch64-linux-gnu/bits/sched.h \
-    /usr/include/aarch64-linux-gnu/bits/timex.h \
-    /usr/include/aarch64-linux-gnu/bits/setjmp.h \
     /usr/include/aarch64-linux-gnu/c++/5/bits/atomic_word.h \
     /usr/include/c++/5/bits/locale_classes.h \
     /usr/include/c++/5/string \
@@ -218,17 +257,15 @@ src/main_cap.o : ../src/main_cap.cpp \
     /usr/include/c++/5/set \
     /usr/include/c++/5/bits/stl_set.h \
     /usr/include/c++/5/bits/stl_multiset.h \
-    /usr/include/c++/5/memory \
-    /usr/include/c++/5/bits/stl_raw_storage_iter.h \
-    /usr/include/c++/5/backward/auto_ptr.h \
-    ../src/capture/HDV4lcap.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_defines.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda.h \
+    ../include/Displayer.hpp \
+    ../src/main.h \
+    ../include/cuda_convert.cuh \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_config.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/builtin_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/device_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_defines.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/surface_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/texture_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_types.h \
@@ -238,48 +275,4 @@ src/main_cap.o : ../src/main_cap.cpp \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_device_runtime_api.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_functions.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.hpp \
-    /usr/include/linux/videodev2.h \
-    /usr/include/aarch64-linux-gnu/sys/time.h \
-    /usr/include/linux/ioctl.h \
-    /usr/include/aarch64-linux-gnu/asm/ioctl.h \
-    /usr/include/asm-generic/ioctl.h \
-    /usr/include/linux/types.h \
-    /usr/include/aarch64-linux-gnu/asm/types.h \
-    /usr/include/asm-generic/types.h \
-    /usr/include/asm-generic/int-ll64.h \
-    /usr/include/aarch64-linux-gnu/asm/bitsperlong.h \
-    /usr/include/asm-generic/bitsperlong.h \
-    /usr/include/linux/posix_types.h \
-    /usr/include/linux/stddef.h \
-    /usr/include/aarch64-linux-gnu/asm/posix_types.h \
-    /usr/include/asm-generic/posix_types.h \
-    /usr/include/linux/v4l2-common.h \
-    /usr/include/linux/v4l2-controls.h \
-    ../include/osa/osa_buf.h \
-    ../include/osa/osa.h \
-    /usr/include/signal.h \
-    /usr/include/aarch64-linux-gnu/bits/signum.h \
-    /usr/include/aarch64-linux-gnu/bits/siginfo.h \
-    /usr/include/aarch64-linux-gnu/bits/sigaction.h \
-    /usr/include/aarch64-linux-gnu/bits/sigcontext.h \
-    /usr/include/aarch64-linux-gnu/asm/sigcontext.h \
-    /usr/include/aarch64-linux-gnu/bits/sigstack.h \
-    /usr/include/aarch64-linux-gnu/sys/ucontext.h \
-    /usr/include/aarch64-linux-gnu/sys/procfs.h \
-    /usr/include/aarch64-linux-gnu/sys/user.h \
-    /usr/include/aarch64-linux-gnu/bits/sigthread.h \
-    ../include/osa/osa_debug.h \
-    /usr/include/libio.h \
-    /usr/include/_G_config.h \
-    /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio2.h \
-    ../include/osa/osa_que.h \
-    ../include/osa/osa_mutex.h \
-    ../include/Displayer.hpp \
-    ../include/osa/osa_thr.h \
-    ../include/osa/osa_sem.h \
-    ../src/main.h \
-    ../include/cuda_convert.cuh \
-    ../include/osa/osa_image_queue.h
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.hpp

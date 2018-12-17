@@ -1,9 +1,5 @@
-src/capture/ChosenCaptureGroup.o : ../src/capture/ChosenCaptureGroup.cpp \
+src/main_core_file.o : ../src/main_core_file.cpp \
     /usr/include/stdc-predef.h \
-    ../src/capture/ChosenCaptureGroup.h \
-    ../src/capture/CaptureGroup.h \
-    ../include/StlGlDefines.h \
-    ../src/capture/Camera.h \
     /usr/include/opencv2/opencv.hpp \
     /usr/include/opencv2/opencv_modules.hpp \
     /usr/include/opencv2/core/core_c.h \
@@ -212,30 +208,56 @@ src/capture/ChosenCaptureGroup.o : ../src/capture/ChosenCaptureGroup.cpp \
     /usr/include/c++/5/set \
     /usr/include/c++/5/bits/stl_set.h \
     /usr/include/c++/5/bits/stl_multiset.h \
+    ../include/glew.h \
+    /usr/include/GL/glu.h \
     /usr/include/GL/gl.h \
-    /usr/include/GL/glext.h \
-    /usr/include/inttypes.h \
-    /usr/include/c++/5/memory \
-    /usr/include/c++/5/bits/stl_raw_storage_iter.h \
-    /usr/include/c++/5/backward/auto_ptr.h \
-    ../src/capture/HDV4lcap.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_defines.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_config.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/builtin_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/device_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/surface_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/texture_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/library_types.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/channel_descriptor.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime_api.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_device_runtime_api.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_functions.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.hpp \
+    /usr/include/GL/glut.h \
+    /usr/include/GL/freeglut_std.h \
+    /usr/include/GL/freeglut_ext.h \
+    /usr/include/opencv/cv.hpp \
+    /usr/include/opencv/cv.h \
+    /usr/include/opencv2/flann/flann.hpp \
+    /usr/include/opencv2/flann/flann_base.hpp \
+    /usr/include/c++/5/cassert \
+    /usr/include/c++/5/cstdio \
+    /usr/include/libio.h \
+    /usr/include/_G_config.h \
+    /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio2.h \
+    /usr/include/opencv2/flann/general.h \
+    /usr/include/opencv2/flann/matrix.h \
+    /usr/include/opencv2/flann/params.h \
+    /usr/include/opencv2/flann/any.h \
+    /usr/include/c++/5/typeinfo \
+    /usr/include/opencv2/flann/saving.h \
+    /usr/include/c++/5/cstring \
+    /usr/include/opencv2/flann/nn_index.h \
+    /usr/include/opencv2/flann/result_set.h \
+    /usr/include/opencv2/flann/all_indices.h \
+    /usr/include/opencv2/flann/kdtree_index.h \
+    /usr/include/opencv2/flann/dynamic_bitset.h \
+    /usr/include/opencv2/flann/dist.h \
+    /usr/lib/gcc/aarch64-linux-gnu/5/include/arm_neon.h \
+    /usr/include/opencv2/flann/heap.h \
+    /usr/include/opencv2/flann/allocator.h \
+    /usr/include/opencv2/flann/random.h \
+    /usr/include/opencv2/flann/kdtree_single_index.h \
+    /usr/include/opencv2/flann/kmeans_index.h \
+    /usr/include/opencv2/flann/logger.h \
+    /usr/include/opencv2/flann/composite_index.h \
+    /usr/include/opencv2/flann/linear_index.h \
+    /usr/include/opencv2/flann/hierarchical_clustering_index.h \
+    /usr/include/opencv2/flann/lsh_index.h \
+    /usr/include/opencv2/flann/lsh_table.h \
+    /usr/include/c++/5/iomanip \
+    /usr/include/opencv2/flann/autotuned_index.h \
+    /usr/include/opencv2/flann/ground_truth.h \
+    /usr/include/opencv2/flann/index_testing.h \
+    /usr/include/opencv2/flann/timer.h \
+    /usr/include/opencv2/flann/sampling.h \
+    /usr/include/opencv2/legacy/compat.hpp \
+    /usr/include/opencv2/core/internal.hpp \
     /usr/include/linux/videodev2.h \
     /usr/include/aarch64-linux-gnu/sys/time.h \
     /usr/include/linux/ioctl.h \
@@ -253,7 +275,14 @@ src/capture/ChosenCaptureGroup.o : ../src/capture/ChosenCaptureGroup.cpp \
     /usr/include/asm-generic/posix_types.h \
     /usr/include/linux/v4l2-common.h \
     /usr/include/linux/v4l2-controls.h \
-    ../include/osa/osa_buf.h \
+    /usr/include/unistd.h \
+    /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
+    /usr/include/aarch64-linux-gnu/bits/environments.h \
+    /usr/include/aarch64-linux-gnu/bits/confname.h \
+    /usr/include/getopt.h \
+    /usr/include/aarch64-linux-gnu/bits/unistd.h \
+    ../src/main.h \
+    ../include/crCore.hpp \
     ../include/osa/osa.h \
     /usr/include/signal.h \
     /usr/include/aarch64-linux-gnu/bits/signum.h \
@@ -267,10 +296,23 @@ src/capture/ChosenCaptureGroup.o : ../src/capture/ChosenCaptureGroup.cpp \
     /usr/include/aarch64-linux-gnu/sys/user.h \
     /usr/include/aarch64-linux-gnu/bits/sigthread.h \
     ../include/osa/osa_debug.h \
-    /usr/include/libio.h \
-    /usr/include/_G_config.h \
-    /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio2.h \
-    ../include/osa/osa_que.h \
-    ../include/osa/osa_mutex.h
+    ../include/osa/osa_sem.h \
+    ../src/capture/thread.h \
+    ../include/osa/osa_mutex.h \
+    ../include/cuda_convert.cuh \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_config.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/builtin_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/device_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_defines.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/surface_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/texture_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/library_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/channel_descriptor.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime_api.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_device_runtime_api.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_functions.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.hpp

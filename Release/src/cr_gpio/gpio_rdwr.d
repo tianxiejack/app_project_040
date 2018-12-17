@@ -1,4 +1,4 @@
-src/cr_gpio/gpio040.o : ../src/cr_gpio/gpio040.cpp \
+src/cr_gpio/gpio_rdwr.o : ../src/cr_gpio/gpio_rdwr.cpp \
     /usr/include/stdc-predef.h \
     /usr/include/fcntl.h \
     /usr/include/features.h \
@@ -50,36 +50,4 @@ src/cr_gpio/gpio040.o : ../src/cr_gpio/gpio040.cpp \
     /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
     /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
     /usr/include/aarch64-linux-gnu/bits/stdlib.h \
-    ../include/osa/osa.h \
-    /usr/include/pthread.h \
-    /usr/include/sched.h \
-    /usr/include/aarch64-linux-gnu/bits/sched.h \
-    /usr/include/aarch64-linux-gnu/bits/timex.h \
-    /usr/include/aarch64-linux-gnu/bits/setjmp.h \
-    /usr/include/string.h \
-    /usr/include/aarch64-linux-gnu/bits/string3.h \
-    /usr/include/signal.h \
-    /usr/include/aarch64-linux-gnu/bits/signum.h \
-    /usr/include/aarch64-linux-gnu/bits/siginfo.h \
-    /usr/include/aarch64-linux-gnu/bits/sigaction.h \
-    /usr/include/aarch64-linux-gnu/bits/sigcontext.h \
-    /usr/include/aarch64-linux-gnu/asm/sigcontext.h \
-    /usr/include/linux/types.h \
-    /usr/include/aarch64-linux-gnu/asm/types.h \
-    /usr/include/asm-generic/types.h \
-    /usr/include/asm-generic/int-ll64.h \
-    /usr/include/aarch64-linux-gnu/asm/bitsperlong.h \
-    /usr/include/asm-generic/bitsperlong.h \
-    /usr/include/linux/posix_types.h \
-    /usr/include/linux/stddef.h \
-    /usr/include/aarch64-linux-gnu/asm/posix_types.h \
-    /usr/include/asm-generic/posix_types.h \
-    /usr/include/aarch64-linux-gnu/bits/sigstack.h \
-    /usr/include/aarch64-linux-gnu/sys/ucontext.h \
-    /usr/include/aarch64-linux-gnu/sys/procfs.h \
-    /usr/include/aarch64-linux-gnu/sys/time.h \
-    /usr/include/aarch64-linux-gnu/sys/user.h \
-    /usr/include/aarch64-linux-gnu/bits/sigthread.h \
-    ../include/osa/osa_debug.h \
-    ../src/cr_gpio/gpio_rdwr.h \
-    ../src/cr_gpio/gpio040.h
+    ../src/cr_gpio/gpio_rdwr.h

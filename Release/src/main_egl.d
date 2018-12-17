@@ -1,16 +1,20 @@
-src/capture/Camera.o : ../src/capture/Camera.cpp \
+src/main_egl.o : ../src/main_egl.cpp \
     /usr/include/stdc-predef.h \
-    /usr/include/opencv/cv.h \
-    /usr/include/opencv2/core/core_c.h \
-    /usr/include/opencv2/core/types_c.h \
-    /usr/include/assert.h \
+    ../include/glew.h \
+    /usr/lib/gcc/aarch64-linux-gnu/5/include/stddef.h \
+    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdint.h \
+    /usr/include/stdint.h \
     /usr/include/features.h \
     /usr/include/aarch64-linux-gnu/sys/cdefs.h \
     /usr/include/aarch64-linux-gnu/bits/wordsize.h \
     /usr/include/aarch64-linux-gnu/gnu/stubs.h \
     /usr/include/aarch64-linux-gnu/gnu/stubs-lp64.h \
+    /usr/include/aarch64-linux-gnu/bits/wchar.h \
+    /usr/include/GL/glu.h \
+    /usr/include/GL/gl.h \
+    /usr/include/GL/glut.h \
+    /usr/include/GL/freeglut_std.h \
     /usr/include/stdlib.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/stddef.h \
     /usr/include/aarch64-linux-gnu/bits/waitflags.h \
     /usr/include/aarch64-linux-gnu/bits/waitstatus.h \
     /usr/include/endian.h \
@@ -33,12 +37,67 @@ src/capture/Camera.o : ../src/capture/Camera.cpp \
     /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
     /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
     /usr/include/aarch64-linux-gnu/bits/stdlib.h \
+    /usr/include/GL/freeglut_ext.h \
+    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdarg.h \
+    /usr/include/linux/videodev2.h \
+    /usr/include/aarch64-linux-gnu/sys/time.h \
+    /usr/include/linux/ioctl.h \
+    /usr/include/aarch64-linux-gnu/asm/ioctl.h \
+    /usr/include/asm-generic/ioctl.h \
+    /usr/include/linux/types.h \
+    /usr/include/aarch64-linux-gnu/asm/types.h \
+    /usr/include/asm-generic/types.h \
+    /usr/include/asm-generic/int-ll64.h \
+    /usr/include/aarch64-linux-gnu/asm/bitsperlong.h \
+    /usr/include/asm-generic/bitsperlong.h \
+    /usr/include/linux/posix_types.h \
+    /usr/include/linux/stddef.h \
+    /usr/include/aarch64-linux-gnu/asm/posix_types.h \
+    /usr/include/asm-generic/posix_types.h \
+    /usr/include/linux/v4l2-common.h \
+    /usr/include/linux/v4l2-controls.h \
+    ../src/capture/MultiChVideo.hpp \
+    ../include/osa/osa.h \
+    /usr/include/pthread.h \
+    /usr/include/sched.h \
+    /usr/include/aarch64-linux-gnu/bits/sched.h \
+    /usr/include/aarch64-linux-gnu/bits/timex.h \
+    /usr/include/aarch64-linux-gnu/bits/setjmp.h \
     /usr/include/string.h \
     /usr/include/aarch64-linux-gnu/bits/string3.h \
+    /usr/include/signal.h \
+    /usr/include/aarch64-linux-gnu/bits/signum.h \
+    /usr/include/aarch64-linux-gnu/bits/siginfo.h \
+    /usr/include/aarch64-linux-gnu/bits/sigaction.h \
+    /usr/include/aarch64-linux-gnu/bits/sigcontext.h \
+    /usr/include/aarch64-linux-gnu/asm/sigcontext.h \
+    /usr/include/aarch64-linux-gnu/bits/sigstack.h \
+    /usr/include/aarch64-linux-gnu/sys/ucontext.h \
+    /usr/include/aarch64-linux-gnu/sys/procfs.h \
+    /usr/include/aarch64-linux-gnu/sys/user.h \
+    /usr/include/aarch64-linux-gnu/bits/sigthread.h \
+    ../include/osa/osa_debug.h \
+    /usr/include/stdio.h \
+    /usr/include/libio.h \
+    /usr/include/_G_config.h \
+    /usr/include/wchar.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio_lim.h \
+    /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio.h \
+    /usr/include/aarch64-linux-gnu/bits/stdio2.h \
+    ../include/osa/osa_thr.h \
+    ../include/osa/osa_buf.h \
+    ../include/osa/osa_que.h \
+    ../include/osa/osa_mutex.h \
+    ../include/osa/osa_sem.h \
+    ../include/osa/osa_image_queue.h \
+    ../src/capture/v4l2camera.hpp \
+    /usr/include/opencv2/opencv.hpp \
+    /usr/include/opencv2/opencv_modules.hpp \
+    /usr/include/opencv2/core/core_c.h \
+    /usr/include/opencv2/core/types_c.h \
+    /usr/include/assert.h \
     /usr/lib/gcc/aarch64-linux-gnu/5/include/float.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdint.h \
-    /usr/include/stdint.h \
-    /usr/include/aarch64-linux-gnu/bits/wchar.h \
     /usr/include/math.h \
     /usr/include/aarch64-linux-gnu/bits/math-vector.h \
     /usr/include/aarch64-linux-gnu/bits/libm-simd-decl-stubs.h \
@@ -60,7 +119,6 @@ src/capture/Camera.o : ../src/capture/Camera.cpp \
     /usr/include/linux/limits.h \
     /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
     /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio_lim.h \
     /usr/include/c++/5/algorithm \
     /usr/include/c++/5/utility \
     /usr/include/aarch64-linux-gnu/c++/5/bits/c++config.h \
@@ -106,9 +164,6 @@ src/capture/Camera.o : ../src/capture/Camera.cpp \
     /usr/include/c++/5/bits/stringfwd.h \
     /usr/include/c++/5/bits/postypes.h \
     /usr/include/c++/5/cwchar \
-    /usr/include/wchar.h \
-    /usr/include/stdio.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdarg.h \
     /usr/include/aarch64-linux-gnu/bits/wchar2.h \
     /usr/include/c++/5/bits/char_traits.h \
     /usr/include/c++/5/bits/localefwd.h \
@@ -122,11 +177,6 @@ src/capture/Camera.o : ../src/capture/Camera.cpp \
     /usr/include/c++/5/ext/atomicity.h \
     /usr/include/aarch64-linux-gnu/c++/5/bits/gthr.h \
     /usr/include/aarch64-linux-gnu/c++/5/bits/gthr-default.h \
-    /usr/include/pthread.h \
-    /usr/include/sched.h \
-    /usr/include/aarch64-linux-gnu/bits/sched.h \
-    /usr/include/aarch64-linux-gnu/bits/timex.h \
-    /usr/include/aarch64-linux-gnu/bits/setjmp.h \
     /usr/include/aarch64-linux-gnu/c++/5/bits/atomic_word.h \
     /usr/include/c++/5/bits/locale_classes.h \
     /usr/include/c++/5/string \
@@ -166,76 +216,29 @@ src/capture/Camera.o : ../src/capture/Camera.cpp \
     /usr/include/opencv2/core/operations.hpp \
     /usr/include/c++/5/limits \
     /usr/include/opencv2/core/mat.hpp \
-    /usr/include/opencv2/imgproc/imgproc_c.h \
-    /usr/include/opencv2/imgproc/types_c.h \
-    /usr/include/opencv2/imgproc/imgproc.hpp \
-    /usr/include/opencv2/video/tracking.hpp \
-    /usr/include/opencv2/features2d/features2d.hpp \
     /usr/include/opencv2/flann/miniflann.hpp \
     /usr/include/opencv2/flann/defines.h \
     /usr/include/opencv2/flann/config.h \
-    /usr/include/opencv2/flann/flann.hpp \
-    /usr/include/opencv2/flann/flann_base.hpp \
-    /usr/include/c++/5/cassert \
-    /usr/include/c++/5/cstdio \
-    /usr/include/libio.h \
-    /usr/include/_G_config.h \
-    /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio.h \
-    /usr/include/aarch64-linux-gnu/bits/stdio2.h \
-    /usr/include/opencv2/flann/general.h \
-    /usr/include/opencv2/flann/matrix.h \
-    /usr/include/opencv2/flann/params.h \
-    /usr/include/opencv2/flann/any.h \
-    /usr/include/c++/5/typeinfo \
-    /usr/include/c++/5/iostream \
-    /usr/include/opencv2/flann/saving.h \
-    /usr/include/c++/5/cstring \
-    /usr/include/opencv2/flann/nn_index.h \
-    /usr/include/opencv2/flann/result_set.h \
-    /usr/include/c++/5/set \
-    /usr/include/c++/5/bits/stl_set.h \
-    /usr/include/c++/5/bits/stl_multiset.h \
-    /usr/include/opencv2/flann/all_indices.h \
-    /usr/include/opencv2/flann/kdtree_index.h \
-    /usr/include/opencv2/flann/dynamic_bitset.h \
-    /usr/include/opencv2/flann/dist.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/arm_neon.h \
-    /usr/include/opencv2/flann/heap.h \
-    /usr/include/opencv2/flann/allocator.h \
-    /usr/include/opencv2/flann/random.h \
-    /usr/include/opencv2/flann/kdtree_single_index.h \
-    /usr/include/opencv2/flann/kmeans_index.h \
-    /usr/include/opencv2/flann/logger.h \
-    /usr/include/opencv2/flann/composite_index.h \
-    /usr/include/opencv2/flann/linear_index.h \
-    /usr/include/opencv2/flann/hierarchical_clustering_index.h \
-    /usr/include/opencv2/flann/lsh_index.h \
-    /usr/include/opencv2/flann/lsh_table.h \
-    /usr/include/c++/5/iomanip \
-    /usr/include/opencv2/flann/autotuned_index.h \
-    /usr/include/opencv2/flann/ground_truth.h \
-    /usr/include/opencv2/flann/index_testing.h \
-    /usr/include/opencv2/flann/timer.h \
-    /usr/include/opencv2/flann/sampling.h \
-    /usr/include/opencv2/calib3d/calib3d.hpp \
-    /usr/include/opencv2/core/affine.hpp \
-    /usr/include/opencv2/objdetect/objdetect.hpp \
-    /usr/include/c++/5/deque \
-    /usr/include/c++/5/bits/stl_deque.h \
-    /usr/include/c++/5/bits/deque.tcc \
-    /usr/include/opencv2/legacy/compat.hpp \
-    /usr/include/opencv2/core/internal.hpp \
-    /usr/include/opencv2/opencv.hpp \
-    /usr/include/opencv2/opencv_modules.hpp \
+    /usr/include/opencv2/imgproc/imgproc_c.h \
+    /usr/include/opencv2/imgproc/types_c.h \
+    /usr/include/opencv2/imgproc/imgproc.hpp \
     /usr/include/opencv2/photo/photo.hpp \
     /usr/include/opencv2/photo/photo_c.h \
     /usr/include/opencv2/video/video.hpp \
+    /usr/include/opencv2/video/tracking.hpp \
     /usr/include/opencv2/video/background_segm.hpp \
     /usr/include/c++/5/list \
     /usr/include/c++/5/bits/stl_list.h \
     /usr/include/c++/5/bits/list.tcc \
+    /usr/include/opencv2/features2d/features2d.hpp \
+    /usr/include/opencv2/objdetect/objdetect.hpp \
+    /usr/include/c++/5/deque \
+    /usr/include/c++/5/bits/stl_deque.h \
+    /usr/include/c++/5/bits/deque.tcc \
+    /usr/include/opencv2/calib3d/calib3d.hpp \
+    /usr/include/opencv2/core/affine.hpp \
     /usr/include/opencv2/ml/ml.hpp \
+    /usr/include/c++/5/iostream \
     /usr/include/opencv2/highgui/highgui_c.h \
     /usr/include/opencv2/highgui/highgui.hpp \
     /usr/include/opencv2/contrib/contrib.hpp \
@@ -251,25 +254,14 @@ src/capture/Camera.o : ../src/capture/Camera.cpp \
     /usr/include/c++/5/bits/mask_array.h \
     /usr/include/c++/5/bits/indirect_array.h \
     /usr/include/opencv2/contrib/openfabmap.hpp \
-    /usr/include/opencv2/core.hpp \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/stdbool.h \
-    ../src/capture/Camera.h \
-    /usr/include/GL/gl.h \
-    /usr/include/GL/glext.h \
-    /usr/include/inttypes.h \
-    ../include/StlGlDefines.h \
-    /usr/include/c++/5/memory \
-    /usr/include/c++/5/bits/stl_raw_storage_iter.h \
-    /usr/include/c++/5/backward/auto_ptr.h \
-    /usr/include/unistd.h \
-    /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
-    /usr/include/aarch64-linux-gnu/bits/environments.h \
-    /usr/include/aarch64-linux-gnu/bits/confname.h \
-    /usr/include/getopt.h \
-    /usr/include/aarch64-linux-gnu/bits/unistd.h \
-    /usr/include/aarch64-linux-gnu/sys/time.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda.h \
-    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_gl_interop.h \
+    /usr/include/c++/5/set \
+    /usr/include/c++/5/bits/stl_set.h \
+    /usr/include/c++/5/bits/stl_multiset.h \
+    ../include/Displayer.hpp \
+    ../src/main.h \
+    ../include/cuda_convert.cuh \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_config.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/builtin_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/device_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/host_defines.h \
@@ -277,7 +269,10 @@ src/capture/Camera.o : ../src/capture/Camera.cpp \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/surface_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/texture_types.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/library_types.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/channel_descriptor.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_runtime_api.h \
     /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/cuda_device_runtime_api.h \
-    /usr/lib/gcc/aarch64-linux-gnu/5/include/omp.h \
-    ../src/capture/thread.h
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/driver_functions.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.h \
+    /usr/local/cuda-8.0/bin/../targets/aarch64-linux/include/vector_functions.hpp
