@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lopencv_highgui -lopencv_core -lopencv_video -lopencv_calib3d -lopencv_flann -lopencv_imgproc -lopencv_contrib -lopencv_objdetect -lgomp -lGL -lGLEW -lglut -lcudart -lnppi -lnppc -ldft -lMMTD -lenh -lcrgst -lv4l2 -lcrcore -lcrmtd -lcrosa
+LIBS := -lopencv_highgui -lopencv_core -lopencv_video -lopencv_imgproc -lgomp -lGL -lGLEW -lglut -lcudart -lnppi -lnppc -lcrencOver422uart -lcrosa -lcrmtd -lcrosd -lcrgst -lcrcore -ldft -lMMTD -lenh -lcrScene
 
